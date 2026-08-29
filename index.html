@@ -457,7 +457,6 @@
             <div class="club-title">TRAPANI VOLLEY • SERIE D</div>
             <div class="app-title">🏋️ SALA PESI MESE 1</div>
         </div>
-        <div id="athlete-role-badge" class="role-badge">Atleta</div>
     </div>
 
     <!-- ATHLETE SELECTOR -->
@@ -864,9 +863,6 @@
     }
 
     function renderAthleteView() {
-        const cleanRole = currentAthlete.role ? currentAthlete.role.split('(')[0].trim() : 'Serie D';
-        document.getElementById('athlete-role-badge').textContent = cleanRole;
-        
         const bannerEl = document.getElementById('demo-guide-banner');
         
         if (currentAthlete.id === "") {
