@@ -873,25 +873,15 @@
         
         if (currentAthlete.id === "") {
             if (bannerEl) bannerEl.style.display = 'flex';
-            riskPill.textContent = "ℹ️ GUIDA DIMOSTRATIVA";
+            riskPill.textContent = "GUIDA DIMOSTRATIVA";
             riskPill.style.background = "#e0f2fe";
             riskPill.style.color = "#0369a1";
             document.getElementById('profile-clinical-text').innerHTML = '<strong>Inquadramento Clinico:</strong> ' + currentAthlete.clinical_summary + '<br><br><strong>Screening Motorio:</strong> ' + currentAthlete.video_findings;
         } else {
             if (bannerEl) bannerEl.style.display = 'none';
-            if (currentAthlete.risk_badge && currentAthlete.risk_badge.includes('Rossa')) {
-                riskPill.textContent = "🔴 FASCIA ROSSA";
-                riskPill.style.background = "#fee2e2";
-                riskPill.style.color = "#991b1b";
-            } else if (currentAthlete.risk_badge && currentAthlete.risk_badge.includes('Gialla')) {
-                riskPill.textContent = "🟡 FASCIA GIALLA";
-                riskPill.style.background = "#fef9c3";
-                riskPill.style.color = "#854d0e";
-            } else {
-                riskPill.textContent = "🟢 FASCIA VERDE";
-                riskPill.style.background = "#dcfce7";
-                riskPill.style.color = "#166534";
-            }
+            riskPill.textContent = cleanRole.toUpperCase();
+            riskPill.style.background = "#eff6ff";
+            riskPill.style.color = "#1e40af";
             document.getElementById('profile-clinical-text').innerHTML = '<strong>Inquadramento Funzionale:</strong> ' + currentAthlete.clinical_summary + '<br><br><strong>Screening Motorio:</strong> ' + currentAthlete.video_findings;
         }
         
