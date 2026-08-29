@@ -509,7 +509,6 @@
             <div class="app-card">
                 <div class="card-header">
                     <span class="card-title">🩺 Profilo Clinico & Screening</span>
-                    <span id="profile-risk-pill" class="card-pill" style="background: #e0f2fe; color: #0369a1;">GUIDA DIMOSTRATIVA</span>
                 </div>
                 <div id="profile-clinical-text" style="font-size: 0.85rem; color: #334155; line-height: 1.4; margin-bottom: 8px;"></div>
                 <div id="profile-golden-rules" style="background: #eff6ff; border-left: 3.5px solid var(--primary); padding: 8px 10px; border-radius: 6px; font-size: 0.82rem; margin-bottom: 8px;"></div>
@@ -520,7 +519,7 @@
             <div class="app-card">
                 <div class="card-header">
                     <span class="card-title">🏋️ Prehab Sala Pesi (15 Minuti)</span>
-                    <span class="card-pill" style="background: #ccfbf1; color: #0f766e;">4 FASI ELAV</span>
+                    <span class="card-pill" style="background: #ccfbf1; color: #0f766e;">PRE-PESI</span>
                 </div>
                 <div id="profile-prehab-pesi" style="font-size: 0.82rem; color: #334155; line-height: 1.4;"></div>
             </div>
@@ -869,19 +868,12 @@
         document.getElementById('athlete-role-badge').textContent = cleanRole;
         
         const bannerEl = document.getElementById('demo-guide-banner');
-        const riskPill = document.getElementById('profile-risk-pill');
         
         if (currentAthlete.id === "") {
             if (bannerEl) bannerEl.style.display = 'flex';
-            riskPill.textContent = "GUIDA DIMOSTRATIVA";
-            riskPill.style.background = "#e0f2fe";
-            riskPill.style.color = "#0369a1";
             document.getElementById('profile-clinical-text').innerHTML = '<strong>Inquadramento Clinico:</strong> ' + currentAthlete.clinical_summary + '<br><br><strong>Screening Motorio:</strong> ' + currentAthlete.video_findings;
         } else {
             if (bannerEl) bannerEl.style.display = 'none';
-            riskPill.textContent = cleanRole.toUpperCase();
-            riskPill.style.background = "#eff6ff";
-            riskPill.style.color = "#1e40af";
             document.getElementById('profile-clinical-text').innerHTML = '<strong>Inquadramento Funzionale:</strong> ' + currentAthlete.clinical_summary + '<br><br><strong>Screening Motorio:</strong> ' + currentAthlete.video_findings;
         }
         
