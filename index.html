@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Trapani Volley • Sala Pesi Mobile App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #004b87;
+        --primary-dark: #0b2545;
+        --accent: #0284c7;
+        --accent-light: #e0f2fe;
+        --success: #16a34a;
+        --warning: #ca8a04;
+        --danger: #dc2626;
+        --bg-app: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+    }
+    
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-app);
+        color: var(--text-main);
+        line-height: 1.4;
+        padding-bottom: 90px;
+    }
+    
+    /* TOP APP BAR */
+    .top-bar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        color: #ffffff;
+        padding: 12px 16px;
+        box-shadow: 0 4px 12px rgba(11, 37, 69, 0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .club-title {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: #93c5fd;
+        text-transform: uppercase;
+    }
+    
+    .app-title {
+        font-size: 1.15rem;
+        font-weight: 900;
+        letter-spacing: -0.3px;
+    }
+    
+    .role-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 20px;
+        backdrop-filter: blur(4px);
+    }
+    
+    /* ATHLETE PICKER BAR */
+    .athlete-selector-bar {
+        background: #ffffff;
+        border-bottom: 1px solid var(--border);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .select-athlete-input {
+        flex: 1;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 800;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1.5px solid #cbd5e1;
+        background: #f8fafc;
+        color: var(--text-main);
+        outline: none;
+    }
+    
+    .select-athlete-input:focus {
+        border-color: var(--primary);
+        background: #ffffff;
+    }
+    
+    /* NAV TABS */
+    .nav-tabs {
+        display: flex;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 61px;
+        z-index: 90;
+    }
+    
+    .nav-tab-btn {
+        flex: 1;
+        padding: 12px 4px;
+        border: none;
+        background: none;
+        font-family: inherit;
+        font-size: 0.80rem;
+        font-weight: 800;
+        color: var(--text-muted);
+        text-align: center;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .nav-tab-btn.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+    
+    /* CONTAINER */
+    .container {
+        padding: 14px 16px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    /* CARD STYLES */
+    .app-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 14px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .card-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .card-pill {
+        font-size: 0.70rem;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 20px;
+        text-transform: uppercase;
+    }
+    
+    /* WEEK SWITCHER PILLS */
+    .week-switcher {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+    
+    .week-btn {
+        padding: 10px 4px;
+        background: #ffffff;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--text-muted);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .week-btn.active {
+        background: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+        box-shadow: 0 3px 8px rgba(0, 75, 135, 0.25);
+    }
+    
+    /* EXERCISE BLOCK */
+    .exercise-block {
+        background: #ffffff;
+        border-radius: 10px;
+        border: 1.5px solid var(--border);
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .ex-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+    
+    .ex-badge {
+        background: var(--primary-dark);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-right: 6px;
+    }
+    
+    .ex-name {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+    
+    .video-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--accent-light);
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        border: 1px solid #bae6fd;
+        margin-top: 4px;
+    }
+    
+    .dose-tag {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .step-item {
+        font-size: 0.82rem;
+        color: #334155;
+        margin-bottom: 4px;
+        line-height: 1.35;
+    }
+    
+    .variant-reg {
+        background: #fef2f2;
+        border-left: 3px solid var(--danger);
+        color: #991b1b;
+        font-size: 0.78rem;
+        padding: 6px 8px;
+        border-radius: 4px;
+        margin-top: 6px;
+    }
+    
+    .variant-prog {
+        background: #f0fdf4;
+        border-left: 3px solid var(--success);
+        color: #166534;
+        font-size: 0.78rem;
+        padding: 6px 8px;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+    
+    .focus-box {
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+        border-radius: 6px;
+        padding: 8px 10px;
+        margin-top: 10px;
+        font-size: 0.80rem;
+        color: #991b1b;
+        font-weight: 700;
+    }
+    
+    /* INPUT CARICHI TOUCH */
+    .load-input-row {
+        background: #eff6ff;
+        border: 1.5px solid #3b82f6;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .load-label {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #1e40af;
+    }
+    
+    .load-input {
+        width: 110px;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 900;
+        text-align: center;
+        padding: 8px;
+        border-radius: 6px;
+        border: 2px solid #22c55e;
+        background: #ffffff;
+        color: #15803d;
+        outline: none;
+    }
+    
+    .load-input:focus {
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+    }
+    
+    /* SEMAFORO RPE */
+    .rpe-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .rpe-mini-card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px;
+        border: 1.5px solid var(--border);
+    }
+    
+    /* CHECK-IN FOOTER BAR */
+    .checkin-container {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border: 2px solid #4ade80;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 16px;
+    }
+    
+    .save-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 900;
+        letter-spacing: 0.3px;
+        cursor: pointer;
+        margin-top: 12px;
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .save-btn:active {
+        transform: scale(0.98);
+    }
+    
+    /* TOAST NOTIFICATION */
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #0f172a;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 30px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+</style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <div class="top-bar">
+        <div>
+            <div class="club-title">TRAPANI VOLLEY • SERIE D</div>
+            <div class="app-title">🏋️ SALA PESI MESE 1</div>
+        </div>
+        <div id="athlete-role-badge" class="role-badge">Atleta</div>
+    </div>
+
+    <!-- ATHLETE SELECTOR -->
+    <div class="athlete-selector-bar">
+        <label for="athlete-select" style="font-size: 0.85rem; font-weight: 800; color: var(--primary-dark);">👤 Atleta:</label>
+        <select id="athlete-select" class="select-athlete-input" onchange="onAthleteChange()">
+            <option value="alessandra_frazzitta">Alessandra Frazzitta</option>
+<option value="arianna_la_vecchia">Arianna La Vecchia</option>
+<option value="caterina_renda">Caterina Renda</option>
+<option value="chiara_grimaldi">Chiara Grimaldi</option>
+<option value="claudia_morghese">Claudia Morghese</option>
+<option value="daniela_inglese">Daniela Inglese</option>
+<option value="deborah_dellutri">Deborah Dell'Utri</option>
+<option value="federica_barraco">Federica Barraco</option>
+<option value="giulia_cusimano">Giulia Cusimano</option>
+<option value="greta_grimaudo">Greta Grimaudo</option>
+<option value="ilenia_montalto">Ilenia Montalto</option>
+<option value="maria_oddo">Maria Oddo</option>
+<option value="michela_mazzola">Michela Mazzola</option>
+<option value="rossella_fabiano">Rossella Fabiano</option>
+<option value="sabrina_lombardo">Sabrina Lombardo</option>
+<option value="valentina_goretti">Valentina Goretti</option>
+
+        </select>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="nav-tabs">
+        <button id="tab-btn-profile" class="nav-tab-btn active" onclick="switchTab('profile')">🩺 Profilo & Prehab</button>
+        <button id="tab-btn-workout" class="nav-tab-btn" onclick="switchTab('workout')">🏋️ Seduta Pesi</button>
+        <button id="tab-btn-rpe" class="nav-tab-btn" onclick="switchTab('rpe')">📊 Guida RPE</button>
+        <button id="tab-btn-history" class="nav-tab-btn" onclick="switchTab('history')">📜 Storico</button>
+    </div>
+
+    <!-- MAIN APP CONTENT -->
+    <div class="container">
+        
+        <!-- TAB 1: PROFILO & PREHAB -->
+        <div id="tab-profile" style="display: block;">
+            <div class="app-card">
+                <div class="card-header">
+                    <span class="card-title">🩺 Profilo Clinico & Screening</span>
+                    <span id="profile-risk-pill" class="card-pill" style="background: #fee2e2; color: #991b1b;">FASCIA ROSSA</span>
+                </div>
+                <div id="profile-clinical-text" style="font-size: 0.85rem; color: #334155; line-height: 1.4; margin-bottom: 8px;"></div>
+                <div id="profile-golden-rules" style="background: #eff6ff; border-left: 3.5px solid var(--primary); padding: 8px 10px; border-radius: 6px; font-size: 0.82rem; margin-bottom: 8px;"></div>
+                <div id="profile-forbidden" style="background: #fee2e2; border: 1px solid #fca5a5; padding: 8px 10px; border-radius: 6px; font-size: 0.80rem; color: #991b1b;"></div>
+            </div>
+
+            <!-- PREHAB PESI -->
+            <div class="app-card">
+                <div class="card-header">
+                    <span class="card-title">🏋️ Prehab Sala Pesi (15 Minuti)</span>
+                    <span class="card-pill" style="background: #ccfbf1; color: #0f766e;">4 FASI ELAV</span>
+                </div>
+                <div id="profile-prehab-pesi" style="font-size: 0.82rem; color: #334155; line-height: 1.4;"></div>
+            </div>
+
+            <!-- PREHAB CAMPO -->
+            <div class="app-card">
+                <div class="card-header">
+                    <span class="card-title">🏟️ Prehab Campo (10 Minuti)</span>
+                    <span class="card-pill" style="background: #dcfce7; color: #166534;">PRE-PALLA</span>
+                </div>
+                <div id="profile-prehab-campo" style="font-size: 0.82rem; color: #334155; line-height: 1.4;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SEDUTA PESI -->
+        <div id="tab-workout" style="display: none;">
+            <!-- WEEK SWITCHER -->
+            <div class="week-switcher">
+                <button class="week-btn active" onclick="switchWeek(1)">Sett. 1<br><span style="font-size: 0.65rem; font-weight: 600;">RPE 5–6</span></button>
+                <button class="week-btn" onclick="switchWeek(2)">Sett. 2<br><span style="font-size: 0.65rem; font-weight: 600;">RPE 6</span></button>
+                <button class="week-btn" onclick="switchWeek(3)">Sett. 3<br><span style="font-size: 0.65rem; font-weight: 600;">RPE 7–8</span></button>
+                <button class="week-btn" onclick="switchWeek(4)">Sett. 4<br><span style="font-size: 0.65rem; font-weight: 600;">Deload</span></button>
+            </div>
+
+            <!-- WEEK GOAL BANNER -->
+            <div id="week-goal-banner" class="app-card" style="background: #eff6ff; border-color: #93c5fd; padding: 12px;"></div>
+
+            <!-- EXERCISES CONTAINER -->
+            <div id="exercises-container"></div>
+
+            <!-- CHECK-IN POST WORKOUT -->
+            <div class="checkin-container">
+                <div style="font-weight: 900; font-size: 1.0rem; color: #166534; margin-bottom: 8px;">
+                    🏁 CHECK-IN FINE SEDUTA
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 800; color: #1e293b;">⚡ Fatica (RPE 1–10):</label>
+                        <select id="checkin-fatica" style="width: 100%; padding: 8px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-weight: 700; margin-top: 2px;">
+                            <option value="RPE 5">RPE 5 (Molto Leggero)</option>
+                            <option value="RPE 6">RPE 6 (Facile / Fluido)</option>
+                            <option value="RPE 7" selected>RPE 7 (Target Ottimale)</option>
+                            <option value="RPE 8">RPE 8 (Impegnativo)</option>
+                            <option value="RPE 9">RPE 9 (Molto Duro)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.78rem; font-weight: 800; color: #1e293b;">🩹 Fastidio Articolare:</label>
+                        <select id="checkin-dolore" style="width: 100%; padding: 8px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-weight: 700; margin-top: 2px;">
+                            <option value="0/10 (Nessun fastidio)" selected>0/10 (Nessun fastidio)</option>
+                            <option value="2/10 (Leggero)">2/10 (Leggero)</option>
+                            <option value="4/10 (Moderato)">4/10 (Moderato)</option>
+                            <option value="6/10 (Forte - Stop)">6/10 (Forte - Stop)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size: 0.78rem; font-weight: 800; color: #1e293b;">💬 Note per il Preparatore:</label>
+                    <input type="text" id="checkin-note" placeholder="Es. Ginocchio perfetto, aumentato 2kg su Hip Thrust" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-family: inherit; font-size: 0.85rem; margin-top: 2px;">
+                </div>
+
+                <button class="save-btn" onclick="saveWorkout()">
+                    <span>💾 SALVA CARICHI SEDUTA</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB 3: GUIDA RPE -->
+        <div id="tab-rpe" style="display: none;">
+            <div class="app-card">
+                <div class="card-header">
+                    <span class="card-title">📊 Guida Pratica all'RPE</span>
+                    <span class="card-pill" style="background: #dbeafe; color: #1e40af;">METODO TRAPANI VOLLEY</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #334155; margin-bottom: 10px; line-height: 1.4;">
+                    💡 <strong>La Regola d'Oro:</strong> <em>"Non arrivare mai a sfinimento. Fermati sempre quando hai ancora 2 o 3 ripetizioni di riserva nel serbatoio!"</em>
+                </div>
+
+                <div class="rpe-card-grid">
+                    <div class="rpe-mini-card" style="border-top: 3.5px solid #22c55e; background: #f0fdf4;">
+                        <div style="font-weight: 900; color: #166534; font-size: 0.85rem;">🟢 RPE 5 – 6</div>
+                        <div style="font-size: 0.70rem; font-weight: 800; color: #15803d; text-transform: uppercase;">FACILE / FLUIDO</div>
+                        <div style="font-size: 0.76rem; color: #334155; margin-top: 4px;">"Potevo farne altre 4–5." Movimento veloce. Ottimo per iniziare e per lo scarico.</div>
+                    </div>
+
+                    <div class="rpe-mini-card" style="border-top: 3.5px solid #ca8a04; background: #fefce8;">
+                        <div style="font-weight: 900; color: #854d0e; font-size: 0.85rem;">🟡 RPE 7 – 8</div>
+                        <div style="font-size: 0.70rem; font-weight: 800; color: #a16207; text-transform: uppercase;">🎯 TARGET OTTIMALE</div>
+                        <div style="font-size: 0.76rem; color: #334155; margin-top: 4px;">"Potevo farne solo 2–3." Senti la fatica, ma la tecnica resta perfetta!</div>
+                    </div>
+
+                    <div class="rpe-mini-card" style="border-top: 3.5px solid #f97316; background: #fff7ed;">
+                        <div style="font-weight: 900; color: #9a3412; font-size: 0.85rem;">🟠 RPE 8.5 – 9</div>
+                        <div style="font-size: 0.70rem; font-weight: 800; color: #c2410c; text-transform: uppercase;">MOLTO DURO</div>
+                        <div style="font-size: 0.76rem; color: #334155; margin-top: 4px;">"Potevo farne solo 1 in più." La velocità cala. Solo se prescritto.</div>
+                    </div>
+
+                    <div class="rpe-mini-card" style="border-top: 3.5px solid #ef4444; background: #fef2f2;">
+                        <div style="font-weight: 900; color: #991b1b; font-size: 0.85rem;">🔴 RPE 10</div>
+                        <div style="font-size: 0.70rem; font-weight: 800; color: #b91c1c; text-transform: uppercase;">🚫 CEDIMENTO (VIETATO)</div>
+                        <div style="font-size: 0.76rem; color: #334155; margin-top: 4px;">Zero ripetizioni in più. Vietato: rovina il salto e causa infortuni.</div>
+                    </div>
+                </div>
+
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 0.80rem; color: #1e3a8a;">
+                    🏐 <strong>Esempio pratico:</strong> Se la scheda ti dice <strong>4×8 rip a RPE 7-8</strong>, scegli un peso con cui faresti al massimo 10 o 11 ripetizioni, ma <strong>fermati tassativamente a 8</strong>!
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: STORICO CARICHI SALVATI -->
+        <div id="tab-history" style="display: none;">
+            <div class="app-card">
+                <div class="card-header">
+                    <span class="card-title">📜 I Tuoi Carichi Registrati</span>
+                    <button onclick="exportHistoryCSV()" style="background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">📥 Esporta CSV</button>
+                </div>
+                <div id="history-table-container"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CUSTOM IN-APP MODAL CONFIRMATION -->
+    <div id="custom-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);">
+        <div style="background: #ffffff; border-radius: 14px; padding: 20px; max-width: 340px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">⚠️</div>
+            <div id="modal-title" style="font-weight: 900; font-size: 1.05rem; color: #0f172a; margin-bottom: 6px;">Conferma Eliminazione</div>
+            <div id="modal-desc" style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin-bottom: 18px;">Vuoi davvero cancellare i dati di questa settimana?</div>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" onclick="closeModal()" style="flex: 1; padding: 12px; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f1f5f9; color: #475569; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+                    Annulla
+                </button>
+                <button type="button" id="modal-confirm-btn" onclick="executeDeleteWeek()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #dc2626; color: #ffffff; font-weight: 800; font-size: 0.88rem; cursor: pointer; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);">
+                    🗑️ Elimina
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+        <span>✅ Carichi salvati con successo nel database!</span>
+    </div>
+
+<script>
+    const TEAM_DATA = [{"id": "alessandra_frazzitta", "name": "Alessandra Frazzitta", "role": "Centrale (Maglia #4)", "risk_badge": "🟡 Fascia Gialla (Volume Salti & Tendini Rotulei)", "mission": "Costruire forza esplosiva per muro/fast e massima protezione eccentrica dei tendini rotulei.", "clinical_summary": "Elevato volume di salti al centro (muro e primo tempo); sovraccarico funzionale del tendine rotuleo bilaterale con necessità di rinforzo catena posteriore e decelerazione eccentrica.", "video_findings": "Flessione profonda corretta ma con tendenza al lieve valgismo dinamico nei cambi di direzione a muro; caviglie reattive ma bisognose di mobilità in dorsiflessione.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Isometrico 60° (3x40''):</strong> Reset del dolore tendineo prima dei carichi.</div>\n                <div>• <strong>2. Box Squat a Tibia Verticale (80°):</strong> Zero sovraccarico di taglio sul tendine rotuleo.</div>\n                <div>• <strong>3. Hip Thrust & Catena Posteriore:</strong> Massima spinta dei glutei a carico zero per le ginocchia.</div>\n            ", "forbidden_movements": "Squat profondo a ginocchia libere <80°, balzi pliometrici duri su cemento, atterraggi rigidi.", "roadmap_fase1": "Adattamento eccentrico e analgesia tendinea (Spanish Squat quotidiano) + Box Squat 80° a RPE 6.", "roadmap_fase2": "Incremento densità di forza neurale (Box Squat & Hip Thrust a RPE 7-8) per salto a muro.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller quadricipiti e polpacci (2' continui per scaricare l'apparato estensore).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglia al muro a ginocchio in asse (2 serie × 10 rip/lato).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per psoas e retto femorale alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Mobilità attiva caviglie, circoli anche 90/90 a terra e aperture toraciche in piedi.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità al palo:</strong> Allungamento dinamico polpacci e tendine d'Achille (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Inibizione dolore pre-salto.</div>\n                <div class=\"prehab-item-card\"><strong>3. Miniband Monster Walk (2 serie × 10 passi):</strong> Attivazione gluteo medio anti-valgo.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia a 45°.</div>\n            ", "session": [{"phase_title": "Prehab Tendineo & Caviglia", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipiti", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglia al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Psoas", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipiti: 2 minuti continui per decontrarre l'apparato estensore.", "Mobilità caviglia: 10 rip spingendo il ginocchio verso il muro senza staccare il tallone.", "Couch stretch psoas: 90 secondi per lato tenendo l'addome compatto.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso (effetto analgesico 45')."], "cues": "Stringi l'elastico dietro le ginocchia, busto eretto e senti bruciare i vasti mediali.", "reg": "", "prog": "", "individual_focus": "Lo Spanish Squat protegge il tendine rotuleo dall'impatto dei salti.", "safety_note": "Zero dolore tendineo.", "log_tag": null}, {"phase_title": "Attivazione VMO & Glutei", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Step-Down Controllato su Box 15cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Clamshell con Miniband al Bacino", "url": "https://www.youtube.com/results?search_query=clamshell+band+glute+medius", "btn": "▶ Video Clamshell"}], "step_list": ["1. Step-Down Box 15cm: 8 rip/lato scendendo in 3'' con tallone che sfiora terra (ginocchio in asse).", "2. Clamshell Miniband: 10 rip/lato aprendo il ginocchio senza ruotare il bacino (rinforzo gluteo medio)."], "cues": "Ginocchio perfettamente dritto sopra la caviglia, non farlo cadere all'interno!", "reg": "Step-down su gradino 5cm / Clamshell a corpo libero.", "prog": "Step-down con manubrio 4kg / Miniband dura.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il VMO e il gluteo medio anti-valgo per proteggere il salto.", "safety_note": "Allineamento ginocchio-piede.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° (Panca 45cm)", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore TRX / Cavo Basso", "url": "https://www.youtube.com/results?search_query=trx+row+technique", "btn": "▶ Video Rematore TRX"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) con tibia rigorosamente verticale (discesa in 3'').", "A2. Rematore TRX: 8 rip a gomiti stretti tirando il petto verso le maniglie e strizzando le scapole."], "cues": "Sfiora la panca senza sederti di peso, mantieni le tibie dritte come due colonne.", "reg": "Box Squat a corpo libero / Rematore al cavo con appoggio.", "prog": "Box Squat 80° con manubri 6+6kg / Rematore TRX inclinato.", "individual_focus": "TIBIA VERTICALE: Il ginocchio non supera la caviglia, azzerando lo shear stress rotuleo.", "safety_note": "Stop se c'è pressione retro-rotulea.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo dai talloni con bilanciere imbottito (tenuta 2'' in cima).", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45° (discesa 2'')."], "cues": "Spingi forte sui talloni e strizza i glutei in cima.", "reg": "Hip Thrust monopodalico corpo libero / Floor press manubri 4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "L'Hip Thrust costruisce potenza pura per il muro a ZERO carico sulle ginocchia.", "safety_note": "Spinta uniforme dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Stretch Psoas & Ginocchia su Panca", "url": "https://www.youtube.com/results?search_query=psoas+bench+stretch", "btn": "▶ Video Stretch Panca"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena incollata a terra.", "2. Decompressione: 2 minuti di allungamento dolce flessori d'anca sulla panca."], "cues": "Schiena piatta a terra, addome rigido.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare durante il Dead Bug.", "safety_note": "Scarico tendineo completo a fine seduta.", "log_tag": null}]}, {"id": "arianna_la_vecchia", "name": "Arianna La Vecchia", "role": "Schiacciatrice", "risk_badge": "🔴 Fascia Rossa (Lesione Cercine Glenoideo Spalla DX)", "mission": "Centratura testa omerale, stabilità gleno-omerale e safe wrist (zero carichi a sbalzo overhead).", "clinical_summary": "Lesione del cercine glenoideo (labrum) alla spalla destra dominante con lassità capsulare e dolore nei movimenti balistici sopra la testa; necessità di centratura dell'omero nella cavità glenoidea.", "video_findings": "Tendenza all'anteposizione della spalla destra in caricamento con compenso del trapezio superiore; buona mobilità degli arti inferiori; stabilità del core da consolidare.", "golden_rules_html": "\n                <div>• <strong>1. Protocollo Jobe 0° con Asciugamano:</strong> Centratura omero e stabilizzazione del labrum.</div>\n                <div>• <strong>2. Floor Press a Terra (Gomiti 45°):</strong> Blocco del gomito sul pavimento, zero stress capsulare.</div>\n                <div>• <strong>3. Rematore a Presa Neutra:</strong> Gomiti bassi e scapole addotte senza alzare le spalle.</div>\n            ", "forbidden_movements": "Distensioni overhead pesanti a braccio teso, panca piana a gomiti larghi 90°, flesso-estensioni forzate polso.", "roadmap_fase1": "Centratura testa omerale (Jobe 0° quotidiano) + stabilizzazione scapolare e Floor Press a RPE 5-6.", "roadmap_fase2": "Incremento forza di trazione e stabilità a presa neutra (RPE 6-7) per proteggere la spalla in attacco.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Massaggio pettorale minore con pallina al muro (90'' per liberare l'omero DX).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cerchi scapolari lenti e mobilità polso a presa neutra (2 serie × 10 movimenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Doorway Pec Stretch delicato a gomito flesso a 90° (60''/lato senza forzature).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Centratura:</strong> Protocollo Jobe a 0° con asciugamano sotto l'ascella (3 serie × 12 extrarotazioni).</div>\n            ", "prehab_campo_3min": "Mobilità dolce collo e braccia, circonduzioni caviglie e aperture toraciche controllate.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità braccia e scapole:</strong> Aperture a catena aperta e cerchi lenti (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Centratura cuffia al palo (2 serie × 10 extrarotazioni):</strong> Gomito addotto pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Decelerazione eccentrica spalla con elastico (2 serie × 8 rip):</strong> Controllo ritmo scapolare.</div>\n                <div class=\"prehab-item-card\"><strong>4. Riscaldamento avambraccio a presa neutra (2 minuti):</strong> Senza impatti traumatici.</div>\n            ", "session": [{"phase_title": "Prehab Spalla Labrum", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Massaggio Pettorale con Pallina", "url": "https://www.youtube.com/results?search_query=lacrosse+ball+pec+minor+release", "btn": "▶ Video Pallina Spalla"}, {"code": "", "name": "2. Mobilità Polso Presa Neutra", "url": "https://www.youtube.com/results?search_query=wrist+neutral+mobility+drills", "btn": "▶ Video Mobilità Polso"}, {"code": "", "name": "3. Doorway Pec Stretch Dolce", "url": "https://www.youtube.com/results?search_query=doorway+pec+stretch+gentle", "btn": "▶ Video Stretch Pettorale"}, {"code": "", "name": "4. Protocollo Jobe 0° con Asciugamano", "url": "https://www.youtube.com/results?search_query=rotator+cuff+external+rotation+towel", "btn": "▶ Video Jobe Spalla"}], "step_list": ["Massaggio pettorale con pallina: 90 secondi al muro per liberare la spalla DX.", "Mobilità polso: 2 serie da 10 movimenti lenti a pugno chiuso.", "Doorway stretch dolce: 60 secondi per lato per allungare il pettorale.", "Protocollo Jobe a 0°: 3 serie da 12 rip di extrarotazioni con asciugamano sotto l'ascella."], "cues": "Gomito DX incollato all'asciugamano, ruota solo l'avambraccio verso l'esterno.", "reg": "", "prog": "", "individual_focus": "Centratura omero fondamentale per proteggere il labrum glenoideo prima dei pesi.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Scapolare & Core", "time_badge": "12 minuti", "dose_badge": "3 serie × 10 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Scapular Wall Slides a W", "url": "https://www.youtube.com/results?search_query=scapular+wall+slides+technique", "btn": "▶ Video Wall Slides"}, {"code": "", "name": "2. Band Pull-Apart Presa Supina", "url": "https://www.youtube.com/results?search_query=band+pull+apart+supinated", "btn": "▶ Video Band Pull-Apart"}], "step_list": ["1. Scapular Wall Slides: 10 rip lente facendo scorrere gli avambracci sul muro (attivazione dentato).", "2. Band Pull-Apart: 12 rip aprendo l'elastico al petto a palmi in su strizzando le scapole."], "cues": "Spalle basse lontane dalle orecchie, concentrati sulle scapole!", "reg": "Wall slides a corpo libero / Pull-apart elastico leggero.", "prog": "Wall slides con miniband ai polsi / Pull-apart elastico medio.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Fissa le scapole alla cassa toracica proteggendo la spalla.", "safety_note": "Controllo del movimento.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Squat su Box 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore a Presa Neutra su Panca", "url": "https://www.youtube.com/results?search_query=neutral+grip+dumbbell+row", "btn": "▶ Video Rematore Neutro"}], "step_list": ["A1. Goblet Squat: 8 rip con manubrio al petto toccando la panca a 80° (discesa in 3'').", "A2. Rematore a Presa Neutra: 8 rip con manubri a gomiti bassi e palmi paralleli."], "cues": "Polsi dritti in linea con l'avambraccio, gomiti vicini al busto.", "reg": "Goblet Squat corpo libero / Rematore con elastico.", "prog": "Goblet Squat manubrio 8-10kg / Rematore manubri 6+6kg.", "individual_focus": "PRESA NEUTRA: Azzeramento totale dello shear stress sul cercine glenoideo.", "safety_note": "Gomiti sempre controllati.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Romanian Deadlift con Manubri", "url": "https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+light", "btn": "▶ Video RDL Manubri"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra (Gomiti 45°)", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Romanian Deadlift: 8-10 rip flettendo il bacino indietro a schiena dritta e manubri aderenti alle gambe.", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45° (il pavimento blocca l'iperestensione)."], "cues": "Fermati quando i tricipiti toccano il pavimento, non allargare i gomiti a 90°.", "reg": "RDL manubri leggeri 4+4kg / Floor press manubri 4+4kg.", "prog": "RDL manubri 8+8kg / Floor press manubri 6+6kg.", "individual_focus": "FLOOR PRESS: Il pavimento impedisce alla testa omerale di traslare in avanti.", "safety_note": "Tutela capsulare assoluta.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 6 rip<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Modified Curl-up McGill", "url": "https://www.youtube.com/results?search_query=mcgill+curl+up", "btn": "▶ Video Curl-up"}, {"code": "", "name": "2. Decompressione & Stretch Cuffia", "url": "https://www.youtube.com/results?search_query=rotator+cuff+gentle+stretch", "btn": "▶ Video Stretch Cuffia"}], "step_list": ["1. Modified Curl-up: 3 serie da 6 rip con 6'' di tenuta isometrica a schiena neutra.", "2. Decompressione: 2 minuti di rilassamento braccia e allungamento dolce rotatori."], "cues": "Colonna stabile, respira regolarmente durante la tenuta.", "reg": "", "prog": "", "individual_focus": "Nessun carico assiale o overhead.", "safety_note": "Rilassamento completo della cuffia dei rotatori.", "log_tag": null}]}, {"id": "caterina_renda", "name": "Caterina Renda", "role": "Schiacciatrice / Giocatrice (29 Anni)", "risk_badge": "🟡 Fascia Gialla (Spalla DX in attesa RMN & Detraining 8 Anni)", "mission": "Adattamento anatomico graduale, centratura cuffia dei rotatori spalla DX e safe wrist.", "clinical_summary": "Dolore cronico spalla DX con sospetta lesione sovraspinato (in attesa RMN); tendinite ricorrente avambraccio-polso SX; ginocchia dolorose a fatica; stop dalla pesistica da 8 anni.", "video_findings": "Asimmetria in elevazione braccia overhead con compenso antalgico spalla DX; squat a ~80° ben eseguito; lieve tensione rotulea flessoria.", "golden_rules_html": "\n                <div>• <strong>1. Protocollo Jobe 0° con Asciugamano:</strong> Centratura testa omerale per togliere attrito sul sovraspinato.</div>\n                <div>• <strong>2. Safe Wrist a Presa Neutra:</strong> Manubri e piegamenti a polsi dritti senza ipersollecitare i tendini SX.</div>\n                <div>• <strong>3. Adattamento Anatomico Graduale:</strong> Carichi moderati RPE 5-6 (Bompa) per risvegliare i tessuti.</div>\n            ", "forbidden_movements": "Schiacciate o alzate balistiche sopra la testa a braccio teso, piegamenti a terra a palmi piatti in iperestensione di polso, carichi pesanti RPE >7.", "roadmap_fase1": "Adattamento Anatomico (AA Bompa 4-6 kg) + Protocollo Jobe 0° spalla DX + Neutral Wrist.", "roadmap_fase2": "Progressione cauta sui multi-articolari a presa neutra (RPE 6-7) dopo esito RMN.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Massaggio pettorale minore con pallina da lacrosse al muro (90'' per liberare l'omero DX).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cerchi scapolari e mobilità polso SX a presa neutra (2 serie × 10 movimenti lenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Doorway Pec Stretch delicato a gomito flesso a 90° (60''/lato senza forzature).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Centratura:</strong> Protocollo Jobe a 0° con asciugamano sotto l'ascella (3 serie × 12 rip extrarotazioni).</div>\n            ", "prehab_campo_3min": "Mobilità attiva caviglie, rotazioni del busto a gomiti flessi e aperture toraciche controllate.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità polso e braccia:</strong> Circonduzioni e flesso-estensioni a catena aperta (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Centratura cuffia al palo (2 serie × 10 extrarotazioni):</strong> Gomito addotto pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Decelerazione eccentrica spalla con elastico (2 serie × 8 rip):</strong> Ritmo scapolare.</div>\n                <div class=\"prehab-item-card\"><strong>4. Riscaldamento avambraccio a presa neutra (2 minuti):</strong> Senza impatti traumatici.</div>\n            ", "session": [{"phase_title": "Prehab Spalla & Polso", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Massaggio Pettorale con Pallina", "url": "https://www.youtube.com/results?search_query=lacrosse+ball+pec+minor+release", "btn": "▶ Video Pallina Spalla"}, {"code": "", "name": "2. Mobilità Polso SX Presa Neutra", "url": "https://www.youtube.com/results?search_query=wrist+neutral+mobility+drills", "btn": "▶ Video Mobilità Polso"}, {"code": "", "name": "3. Doorway Pec Stretch Dolce", "url": "https://www.youtube.com/results?search_query=doorway+pec+stretch+gentle", "btn": "▶ Video Stretch Pettorale"}, {"code": "", "name": "4. Protocollo Jobe 0° con Asciugamano", "url": "https://www.youtube.com/results?search_query=rotator+cuff+external+rotation+towel", "btn": "▶ Video Jobe Spalla"}], "step_list": ["Massaggio pettorale con pallina: 90 secondi al muro per liberare la mobilità della spalla DX.", "Mobilità polso sinistro: 2 serie da 10 movimenti lenti a pugno chiuso a presa neutra.", "Doorway stretch dolce: 60 secondi per lato per allungare il pettorale minore.", "Protocollo Jobe a 0°: 3 serie da 12 rip di extrarotazioni con asciugamano sotto l'ascella (centratura testa omerale)."], "cues": "Gomito DX incollato all'asciugamano, ruota solo l'avambraccio verso l'esterno.", "reg": "", "prog": "", "individual_focus": "Centratura omero per evitare attriti sul sovraspinato; Neutral wrist per non infiammare il polso SX.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Scapole & Tendini", "time_badge": "12 minuti", "dose_badge": "3 serie × 10 rip<br><strong>RPE 5 (Buffer 5)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Scapular Wall Slides a Braccia a W", "url": "https://www.youtube.com/results?search_query=scapular+wall+slides+technique", "btn": "▶ Video Wall Slides"}, {"code": "", "name": "2. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["1. Scapular Wall Slides: 10 rip lente facendo scorrere gli avambracci sul muro (attivazione dentato anteriore).", "2. Spanish Squat isometrico: 3 serie da 35'' hold con elastico spesso per proteggere le ginocchia."], "cues": "Spalle basse lontane dalle orecchie; elastico teso dietro le ginocchia.", "reg": "Wall slides a corpo libero / Spanish squat a 45°.", "prog": "Wall slides con miniband ai polsi / Spanish squat a 60°.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Attiva gli stabilizzatori scapolari e protegge i tendini rotulei.", "safety_note": "Movimenti fluidi e controllati.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "3–4 serie × 10 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Box Squat (Manubrio 4-6kg)", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore con Manubri a Presa Neutra", "url": "https://www.youtube.com/results?search_query=neutral+grip+dumbbell+row", "btn": "▶ Video Rematore Neutro"}], "step_list": ["A1. Goblet Box Squat: 10 rip sfiorando la panca (45cm) con un manubrio leggero da 4-6kg al petto (discesa in 3'').", "A2. Rematore a Presa Neutra: 10 rip con manubri a gomiti bassi e palmi paralleli che si guardano."], "cues": "Muoviti fluida, respira costantemente e mantieni i polsi dritti in linea con l'avambraccio.", "reg": "Box Squat a corpo libero / Rematore con elastico leggero.", "prog": "Goblet Squat manubrio 6kg / Rematore manubri 6+6kg a presa neutra.", "individual_focus": "PRESA NEUTRA: I palmi guardano l'un l'altro; il polso sinistro rimane dritto senza alcuna flessione forzata.", "safety_note": "Fase di Adattamento Anatomico (Bompa).", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "3–4 serie × 8–10 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Romanian Deadlift (Manubri 4-6kg)", "url": "https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+light", "btn": "▶ Video RDL Manubri"}, {"code": "B2", "name": "Push-up su Panca con Manubri", "url": "https://www.youtube.com/results?search_query=dumbbell+pushup+neutral+wrist", "btn": "▶ Video Push-up Manubri"}], "step_list": ["B1. Romanian Deadlift con manubri: 8-10 rip flettendo il bacino indietro a schiena dritta e ginocchia morbide.", "B2. Push-up inclinati su panca: 8 rip impugnando i manubri esagonali (polso perfettamente dritto)."], "cues": "Spingi via la panca con il corpo compatto senza inarcare la schiena.", "reg": "Glute Bridge a terra / Piegamenti al muro a presa neutra.", "prog": "RDL manubri 6+6kg / Push-up su panca con manubri.", "individual_focus": "SAFE WRIST PRINCIPLE: L'appoggio sui manubri scarica completamente il tendine flessore del polso SX.", "safety_note": "Tutela tendinea assoluta.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 6 rip/lato<br>2' Allungamento<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Bird-Dog Controllato McGill", "url": "https://www.youtube.com/results?search_query=mcgill+bird+dog", "btn": "▶ Video Bird-Dog"}, {"code": "", "name": "2. Stretch Spalle & Avambracci", "url": "https://www.youtube.com/results?search_query=shoulder+wrist+gentle+stretch", "btn": "▶ Video Stretch Spalla"}], "step_list": ["1. Bird-Dog McGill controllato: 3 serie da 6 rip per lato con spalla DX rilassata lontana dall'orecchio.", "2. Allungamento delicato: 2 minuti per aprire il petto e scaricare gli avambracci."], "cues": "Movimenti lenti e precisi, testa allineata con la colonna.", "reg": "", "prog": "", "individual_focus": "Nessun carico assiale o overhead.", "safety_note": "Rientro graduale e sicuro alla pesistica.", "log_tag": null}]}, {"id": "chiara_grimaldi", "name": "Chiara Grimaldi", "role": "Schiacciatrice / Opposto", "risk_badge": "🟡 Fascia Gialla (Impingement Subacromiale Spalla DX)", "mission": "Rinforzo del dentato anteriore, stabilità scapolare e Floor Press per schiacciare senza dolore.", "clinical_summary": "Tendenza alla risalita della testa omerale con conflitto subacromiale alla spalla destra dominante; rigidità del tratto dorsale con compenso lombare nei movimenti overhead.", "video_findings": "Ritmo scapolo-omerale asimmetrico; debolezza degli extrarotatori a gomito addotto; ottima reattività degli arti inferiori e buona spinta nei salti.", "golden_rules_html": "\n                <div>• <strong>1. Scapular Wall Slides & Push-Up Plus:</strong> Attivazione del dentato anteriore pre-pesi.</div>\n                <div>• <strong>2. Dumbbell Floor Press a Terra:</strong> Il pavimento blocca la traslazione omerale anteriore.</div>\n                <div>• <strong>3. Rematore a Gomiti Bassi:</strong> Addurre e deprimere le scapole senza usare il trapezio.</div>\n            ", "forbidden_movements": "Lento avanti con bilanciere overhead, trazioni alla sbarra a presa prona larga, alzate laterali >90°.", "roadmap_fase1": "Rieducazione ritmo scapolare (Wall Slides quotidiani) + Dumbbell Floor Press a RPE 6.", "roadmap_fase2": "Incremento forza di trazione e stabilizzazione dinamica della cuffia (RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su gran dorsale e tratto toracico (2' per liberare la spalla DX).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cat-Camel con focus sull'estensione dorsale (8 cicli lenti e controllati).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Doorway Stretch a gomito flesso a 90° (60''/lato tenendo le costole chiuse).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Centratura:</strong> Extrarotazioni con elastico a gomito flesso 90° e addotto al busto (3 serie × 12 rip).</div>\n            ", "prehab_campo_3min": "Mobilità attiva spalle, rotazioni toraciche a braccia flesse e slanci controllati.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità toracica al palo:</strong> Aperture e rotazioni con appoggio mano (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Extrarotazioni al palo con elastico (2 serie × 10 rip):</strong> Attivazione cuffia pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Movimenti a W e a Y a corpo libero (2 serie × 8 rip):</strong> Fissatori della scapola.</div>\n                <div class=\"prehab-item-card\"><strong>4. Lanci controllati pallina medica 1kg a 2 mani (3 serie × 6 rip):</strong> Ritmo di spinta.</div>\n            ", "session": [{"phase_title": "Prehab Scapola & Dorsali", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Gran Dorsale", "url": "https://www.youtube.com/results?search_query=foam+roller+lat+release", "btn": "▶ Video Foam Roller Lat"}, {"code": "", "name": "2. Cat-Camel Mobilità Dorsale", "url": "https://www.youtube.com/results?search_query=cat+camel+thoracic+mobility", "btn": "▶ Video Cat-Camel"}, {"code": "", "name": "3. Doorway Pec Stretch", "url": "https://www.youtube.com/results?search_query=doorway+pec+stretch", "btn": "▶ Video Stretch Pettorale"}, {"code": "", "name": "4. Extrarotazioni Elastico Gomito Addotto", "url": "https://www.youtube.com/results?search_query=band+external+rotation+elbow+adducted", "btn": "▶ Video Extrarotazioni"}], "step_list": ["Foam roller gran dorsale: 2 minuti per scaricare la tensione sotto l'ascella DX.", "Cat-Camel dorsale: 8 cicli spingendo il petto avanti in estensione.", "Doorway stretch: 60 secondi per lato mantenendo l'addome compatto.", "Extrarotazioni elastico: 3 serie da 12 rip a gomito incollato al fianco."], "cues": "Gomito fermo sul fianco, ruota solo la mano all'esterno.", "reg": "", "prog": "", "individual_focus": "Fissa la scapola prima di caricare la spalla dominante.", "safety_note": "Zero dolore subacromiale.", "log_tag": null}, {"phase_title": "Attivazione Dentato & Spalle", "time_badge": "12 minuti", "dose_badge": "3 serie × 10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Push-Up Plus su Panca", "url": "https://www.youtube.com/results?search_query=push+up+plus+bench", "btn": "▶ Video Push-Up Plus"}, {"code": "", "name": "2. Face Pull con Elastico al Viso", "url": "https://www.youtube.com/results?search_query=face+pull+band+technique", "btn": "▶ Video Face Pull"}], "step_list": ["1. Push-Up Plus: 10 rip allontanando le scapole in cima al movimento senza piegare i gomiti.", "2. Face Pull elastico: 12 rip tirando l'elastico verso gli occhi a gomiti alti e pollici indietro."], "cues": "Strizza le scapole e apri il petto in cima!", "reg": "Push-up plus al muro / Face pull elastico leggero.", "prog": "Push-up plus a terra / Face pull al cavo alto.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Attiva il dentato anteriore e i rotatori posteriori.", "safety_note": "Movimenti controllati.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Dumbbell Box Squat a 80°", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore con Manubrio su Panca", "url": "https://www.youtube.com/results?search_query=single+arm+dumbbell+row", "btn": "▶ Video Rematore Manubrio"}], "step_list": ["A1. Box Squat 80°: 8 rip con manubri lungo i fianchi toccando la panca (discesa 3'').", "A2. Rematore Manubrio: 8 rip/lato con mano appoggiata su panca tirando il manubrio verso l'anca."], "cues": "Tira il manubrio verso la tasca dei pantaloni senza ruotare il busto.", "reg": "Box Squat corpo libero / Rematore con elastico.", "prog": "Box Squat manubri 8+8kg / Rematore manubrio 10kg.", "individual_focus": "REMATORE VERSO L'ANCA: Deprime la scapola e protegge lo spazio subacromiale.", "safety_note": "Scapole addotte.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni (tenuta 2'' in cima).", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45° (il pavimento blocca l'omero)."], "cues": "Gomiti a 45° rispetto al corpo, sfiora il pavimento e risali.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "FLOOR PRESS: Azzeramento del braccio di leva posteriore sulla cuffia dei rotatori.", "safety_note": "Tecnica pulita.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug con Fitball", "url": "https://www.youtube.com/results?search_query=dead+bug+stability+ball", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione Appesa alla Spalliera", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Spalliera"}], "step_list": ["1. Dead Bug con Fitball: 8 rip/lato schiacciando la palla tra mani e ginocchia opposte.", "2. Scarico: 2 minuti di sospensione passiva alla spalliera per aprire le spalle."], "cues": "Schiaccia forte la fitball con l'addome incollato a terra.", "reg": "", "prog": "", "individual_focus": "Core rigido anti-estensione.", "safety_note": "Decompressione completa spalla-dorso a fine seduta.", "log_tag": null}]}, {"id": "claudia_morghese", "name": "Claudia Morghese", "role": "Schiacciatrice (Maglia #14)", "risk_badge": "🔴 Fascia Rossa (Sovraccarico Discale Lombare)", "mission": "Spinal Sparing McGill, eliminazione carichi a sbalzo lombare, forza pura glutei ed elevazione sicura.", "clinical_summary": "Storia di sovraccarico lombare pregresso con rigidità sacro-iliaca; asintomatica nei test dinamici ma con necessità di evitare forze di taglio sulla colonna e compressioni dirette.", "video_findings": "Flessione lombare precoce negli stacchi tradizionali con compenso dorsale; ottima spinta nei salti; necessità di consolidare il bracing addominale.", "golden_rules_html": "\n                <div>• <strong>1. Prehab McGill Big 3 Quotidiano:</strong> Costruzione del corsetto muscolare protettivo.</div>\n                <div>• <strong>2. Dumbbell Sumo Deadlift su Step:</strong> Busto verticale, manubrio vicino al baricentro.</div>\n                <div>• <strong>3. Rematore a Petto Appoggiato:</strong> Azzeramento del carico a sbalzo sulla schiena.</div>\n            ", "forbidden_movements": "Back Squat con bilanciere sul collo, stacco da terra a bilanciere dritto con schiena flessa, sit-up/crunch tradizionali.", "roadmap_fase1": "Spinal Sparing McGill (Big 3) quotidiano + Sumo Deadlift manubrio su step e Goblet Squat a RPE 6.", "roadmap_fase2": "Incremento carico su Sumo Deadlift e Hip Thrust (RPE 7-8) a busto rigorosamente verticale.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller & pallina da lacrosse su glutei e piriforme (2' per scaricare la zona lombare).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cat-Camel per mobilizzazione discale dolce (8 cicli lenti senza forzature).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> 90/90 Hip Stretch a terra per liberare i rotatori dell'anca (90''/lato a colonna neutra).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Modified Curl-up McGill (3 serie × 6 rip · 6'' hold) + Decompressione sbarra (60'').</div>\n            ", "prehab_campo_3min": "Mobilità attiva spalle, circonduzioni caviglie e mobilità d'anca (zero flesso-torsioni lombari).", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità dinamica:</strong> Apertura bacino e cerchi lenti a catena aperta (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. McGill Bird-Dog a terra (2 serie × 6/lato · 4'' hold):</strong> Attivazione core rigido a carico zero.</div>\n                <div class=\"prehab-item-card\"><strong>3. Glute Bridge Monopodalico (2 serie × 8 rip/lato):</strong> Attivazione glutei per estendere l'anca.</div>\n                <div class=\"prehab-item-card\"><strong>4. Skip A a busto eretto (3 serie × 15m):</strong> Consolidamento del bracing addominale in movimento.</div>\n            ", "session": [{"phase_title": "Prehab Spine McGill", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Glutei & Piriforme", "url": "https://www.youtube.com/results?search_query=foam+roller+glute+piriformis+release", "btn": "▶ Video Piriforme"}, {"code": "", "name": "2. Cat-Camel Mobilità Discale", "url": "https://www.youtube.com/results?search_query=cat+camel+mcgill", "btn": "▶ Video Cat-Camel"}, {"code": "", "name": "3. 90/90 Hip Mobility Stretch", "url": "https://www.youtube.com/results?search_query=90+90+hip+mobility+stretch", "btn": "▶ Video 90/90 Stretch"}, {"code": "", "name": "4. Modified Curl-up McGill", "url": "https://www.youtube.com/results?search_query=mcgill+curl+up", "btn": "▶ Video Curl-up"}], "step_list": ["Foam roller e pallina glutei: 2 minuti per decontrarre la zona piriforme.", "Cat-Camel dolce: 8 cicli lenti senza forzare il fine corsa.", "90/90 Hip Stretch: 90 secondi per lato mantenendo la colonna neutra.", "Modified Curl-up: 3 serie da 6 rip (6 secondi di tenuta isometrica a ogni rip)."], "cues": "Crea un cilindro d'acciaio attorno alla vita con il bracing senza piegare la schiena.", "reg": "", "prog": "", "individual_focus": "Il prehab McGill protegge la colonna lombare prima dei sovraccarichi.", "safety_note": "Zero flesso-torsioni lombari.", "log_tag": null}, {"phase_title": "Attivazione Core & Glutei", "time_badge": "12 minuti", "dose_badge": "3 serie × 6–8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Bird-Dog Dinamico Tenuta 4''", "url": "https://www.youtube.com/results?search_query=mcgill+bird+dog", "btn": "▶ Video Bird-Dog"}, {"code": "", "name": "2. Single-Leg Glute Bridge a Terra", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge", "btn": "▶ Video Single Glute Bridge"}], "step_list": ["1. Bird-Dog Dinamico: 3 serie da 6 rip/lato stendendo pugno e tallone opposto con 4'' di tenuta ferma in cima.", "2. Glute Bridge Monopodalico: 3 serie da 8 rip/lato spingendo dal tallone per risvegliare i glutei."], "cues": "Colonna perfettamente immobile come un tavolo, muovi solo braccio e gamba!", "reg": "Bird-dog a corpo libero / Glute bridge a due piedi.", "prog": "Bird-dog con pattern quadrati / Glute bridge con elastico.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Attiva gli erettori spinali e i glutei senza comprimere i dischi.", "safety_note": "Zero compenso lombare.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 6–8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Sumo Deadlift con Manubrio su Step", "url": "https://www.youtube.com/results?search_query=dumbbell+sumo+deadlift+elevated", "btn": "▶ Video Sumo Manubrio"}, {"code": "A2", "name": "Panca Manubri con Piedi su Step", "url": "https://www.youtube.com/results?search_query=dumbbell+bench+press+feet+flat", "btn": "▶ Video Panca Step"}], "step_list": ["A1. Sumo Deadlift con Manubrio: 6-8 rip piedi larghi su step, manubrio pesante al centro a busto eretto.", "A2. Panca Manubri con Piedi su Step: 8 rip con piedi rialzati per appiattire la lordosi contro lo schienale."], "cues": "Busto verticale, spingi forte con i talloni tenendo il manubrio vicino al baricentro.", "reg": "Sumo squat corpo libero / Panca a terra (Floor press).", "prog": "Sumo Deadlift manubrio 16-20kg / Panca manubri 10+10kg.", "individual_focus": "BUSTO VERTICALE: Il manubrio tenuto in mezzo ai piedi azzera il braccio di leva lombare.", "safety_note": "Schiena rigorosamente neutra.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Goblet Squat su Box a 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat", "btn": "▶ Video Goblet Squat"}, {"code": "B2", "name": "Rematore su Panca Inclinata 30°", "url": "https://www.youtube.com/results?search_query=chest+supported+dumbbell+row", "btn": "▶ Video Rematore Panca"}], "step_list": ["B1. Goblet Squat su Box 80°: 8 rip con manubrio verticale al petto toccando la panca (zero bilanciere sul collo).", "B2. Rematore a Busto Appoggiato: 8 rip con petto incollato alla panca a 30° tirando i gomiti indietro."], "cues": "Gomiti verso il basso nel Goblet; petto incollato alla panca nel rematore.", "reg": "Goblet Squat corpo libero / Rematore al cavo seduta.", "prog": "Goblet Squat manubrio 10-12kg / Rematore manubri 8+8kg.", "individual_focus": "PETTO APPOGGIATO: Azzeramento totale del carico di taglio e a sbalzo sulla colonna.", "safety_note": "Scarico discale perfetto.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 20''/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Side Plank McGill su Ginocchia", "url": "https://www.youtube.com/results?search_query=mcgill+side+plank+knees", "btn": "▶ Video Side Plank"}, {"code": "", "name": "2. Scarico Passivo Sbarra Finale", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Sbarra"}], "step_list": ["1. Side Plank su ginocchia: 3 serie da 20 secondi per lato strizzando i glutei (anti-flessione laterale).", "2. Scarico finale: 2 minuti di decompressione passiva appesa alla spalliera."], "cues": "Linea retta spalla-bacino-ginocchio, addome compatto.", "reg": "", "prog": "", "individual_focus": "Anti-flessione laterale della colonna.", "safety_note": "Stop immediato in caso di fastidio lombare.", "log_tag": null}]}, {"id": "daniela_inglese", "name": "Daniela Inglese", "role": "Schiacciatrice / Libero", "risk_badge": "🔴 Fascia Rossa (Degenerazione Menisco Mediale SX & Borsite)", "mission": "Protezione menisco mediale SX, eliminazione flessioni profonde e potenziamento catena posteriore.", "clinical_summary": "Degenerazione del corno posteriore del menisco mediale sinistro con versamento reattivo; dolore scatenato da accosciate profonde ad angoli chiusi e torsioni a piede bloccato.", "video_findings": "Flessione limitata a ~80° per compenso antalgico; buona tenuta del bacino; necessità di massimizzare il reclutamento dei glutei a ginocchio fermo.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Isometrico 60° (3x40''):</strong> Inibizione del dolore e protezione articolare.</div>\n                <div>• <strong>2. Box Squat 80° a Tibia Verticale:</strong> Il menisco mediale non subisce schiacciamenti.</div>\n                <div>• <strong>3. Barbell Hip Thrust:</strong> Forza pura per il salto a carico zero sulle ginocchia.</div>\n            ", "forbidden_movements": "Flessioni del ginocchio <80° a catena chiusa, torsioni brusche a piede perno bloccato, affondi profondi.", "roadmap_fase1": "Analgesia meniscale (Spanish Squat 60°) + Box Squat 80° tibia verticale a RPE 6.", "roadmap_fase2": "Incremento densità di carico su catena posteriore (Hip Thrust & RDL a RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su quadricipite (vasto mediale/retto femorale) e polpaccio SX (gastrocnemio e soleo) per 2' lenti per allentare l'apparato estensore e la tensione distale.</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglia SX al muro (2 serie × 10 rip a ginocchio in asse).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Allungamento delicato catena posteriore alla panca (90''/lato senza forzature).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico a 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Mobilità attiva caviglie, circoli bacino e mobilità d'anca dolce.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità al palo:</strong> Foam roller/allungamento dinamico su quadricipiti e polpaccio SX (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Protezione meniscale pre-impatto.</div>\n                <div class=\"prehab-item-card\"><strong>3. Monster Walk con miniband (2 serie × 10 passi):</strong> Stabilità laterale del ginocchio.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia a 45°.</div>\n            ", "session": [{"phase_title": "Prehab Quadricipite, Polpaccio & Menisco", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipiti & Polpaccio SX", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+and+calf+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglia SX al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Stretch Posteriore su Panca", "url": "https://www.youtube.com/results?search_query=hamstring+bench+stretch+gentle", "btn": "▶ Video Stretch Panca"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller su quadricipiti e polpaccio SX: 2 minuti continui e lenti per scaricare l'apparato estensore e la tensione distale al ginocchio.", "Mobilità caviglia: 10 rip spingendo il ginocchio verso il muro senza staccare il tallone.", "Stretch posteriore: 90 secondi per lato a ginocchio morbido senza forzare il blocco articolare.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso."], "cues": "Lavora bene col foam roller su quadricipite e polpaccio, poi busto dritto nello Spanish Squat.", "reg": "", "prog": "", "individual_focus": "Release su quadricipite e polpaccio + Spanish Squat obbligatorio per proteggere il menisco prima dei carichi.", "safety_note": "Zero dolore mediale.", "log_tag": null}, {"phase_title": "Attivazione Stabilità & VMO", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Step-Down Controllato su Box 10cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Glute Bridge con Miniband alle Ginocchia", "url": "https://www.youtube.com/results?search_query=glute+bridge+band+knees", "btn": "▶ Video Glute Bridge Band"}], "step_list": ["1. Step-Down Box 10cm: 8 rip/lato scendendo molto piano (3'') con tallone che tocca terra in linea col 2° dito.", "2. Glute Bridge Miniband: 10 rip spingendo le ginocchia all'esterno per attivare il gluteo medio."], "cues": "Mantieni il ginocchio SX perfettamente allineato al piede, non farlo cadere all'interno!", "reg": "Step-down su gradino 5cm / Glute bridge a corpo libero.", "prog": "Step-down box 15cm / Glute bridge con disco 5kg sul bacino.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Protegge il comparto mediale del ginocchio dal cedimento in valgo.", "safety_note": "Controllo millimetrico.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° con Manubri", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Lat Machine a Presa Inversa Stretta", "url": "https://www.youtube.com/results?search_query=reverse+grip+lat+pulldown", "btn": "▶ Video Lat Machine"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) a tibia rigorosamente verticale (discesa 3'').", "A2. Lat Machine Presa Inversa: 8 rip tirando la sbarra al petto a gomiti stretti e scapole addotte."], "cues": "Sfiora la panca senza rimbalzare, mantieni le tibie perfettamente verticali.", "reg": "Box Squat corpo libero / Lat machine al cavo leggero.", "prog": "Box Squat manubri 6+6kg / Lat machine carico medio.", "individual_focus": "TIBIA VERTICALE: Il corno posteriore del menisco mediale non subisce schiacciamenti.", "safety_note": "Ginocchia stabili.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Push-up su Panca Inclinata", "url": "https://www.youtube.com/results?search_query=incline+bench+pushup", "btn": "▶ Video Push-up Panca"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con tenuta di 2'' in cima.", "B2. Push-up su Panca: 8 rip mantenendo il corpo in asse come una tavola (discesa 2'')."], "cues": "Spingi dai talloni, strizza i glutei in cima.", "reg": "Hip Thrust corpo libero / Push-up al muro.", "prog": "Hip Thrust bilanciere 20-30kg / Push-up panca bassa.", "individual_focus": "L'Hip Thrust permette di caricare i glutei al 100% a carico ZERO per il menisco SX.", "safety_note": "Spinta potente dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione & Scarico Ginocchia", "url": "https://www.youtube.com/results?search_query=knee+decompression+gentle+bench", "btn": "▶ Video Scarico Ginocchia"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena a terra.", "2. Scarico: 2 minuti di riposo a gambe rialzate sulla panca per favorire il drenaggio del versamento."], "cues": "Schiena incollata al pavimento, addome compatto.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare.", "safety_note": "Monitorare assenza di calore o gonfiore al ginocchio SX.", "log_tag": null}]}, {"id": "deborah_dellutri", "name": "Deborah Dell'Utri", "role": "Libero", "risk_badge": "🟡 Fascia Gialla (Trauma Impatto Ginocchio DX & Difesa)", "mission": "Assorbimento impatti in tuffo/difesa, stabilità rotulea DX e reattività rapida nei cambi di direzione.", "clinical_summary": "Dolore al ginocchio destro scatenato da impatti in fase di difesa a terra e tuffi nella passata stagione; sovraccarico meccanico del comparto femoro-rotuleo e necessità di cuscinetto muscolare.", "video_findings": "Ottima reattività e baricentro basso in ricezione; tendenza all'atterraggio asimmetrico sul ginocchio destro nei recuperi difensivi rapidi.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Isometrico 60° (3x40''):</strong> Analgesia rotulea pre-allenamento.</div>\n                <div>• <strong>2. Poliquin Step-Down Controllato:</strong> Rinforzo eccentrico del vasto mediale anti-impatto.</div>\n                <div>• <strong>3. Barbell Hip Thrust:</strong> Forza glutei per accelerazioni orizzontali in tuffo.</div>\n            ", "forbidden_movements": "Atterraggi a gamba rigida, accosciate profonde a ginocchia avanzate, sovraccarichi pliometrici duri.", "roadmap_fase1": "Analgesia rotulea (Spanish Squat quotidiano) + rinforzo vasto mediale (Step-down) a RPE 6.", "roadmap_fase2": "Incremento densità di forza orizzontale (Hip Thrust & Box Squat a RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su quadricipite e tensore fascia lata DX (2' continui per scaricare la rotula).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglia DX al muro (2 serie × 10 rip a tallone incollato a terra).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per psoas e flessori d'anca alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico a 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Mobilità dinamica caviglie e anche, circonduzioni braccia e aperture toraciche.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Allungamento dinamico caviglie:</strong> Spinta al palo e allungamento polpacci (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Protezione rotulea pre-difesa.</div>\n                <div class=\"prehab-item-card\"><strong>3. Scivolamenti difensivi lenti con miniband (2 serie × 8 passi/lato):</strong> Baricentro basso.</div>\n                <div class=\"prehab-item-card\"><strong>4. Tuffi controllati su materassino (3 serie × 4 scivolamenti):</strong> Tecnica di scarico impatto.</div>\n            ", "session": [{"phase_title": "Prehab Ginocchio Difesa", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipite & TFL", "url": "https://www.youtube.com/results?search_query=foam+roller+tfl+quadriceps", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglia DX al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Flessori Anca", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipite DX: 2 minuti per decontrarre l'apparato estensore.", "Mobilità caviglia DX: 10 rip spingendo il ginocchio verso il muro senza staccare il tallone.", "Couch stretch psoas: 90 secondi per lato a schiena neutra.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso."], "cues": "Senti lavorare i vasti mediali, colonna eretta e addome compatto.", "reg": "", "prog": "", "individual_focus": "Spanish Squat fondamentale per proteggere la rotula dagli impatti a terra.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Vasto Mediale & Core", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Poliquin Step-Down su Box 15cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Clamshell con Miniband al Bacino", "url": "https://www.youtube.com/results?search_query=clamshell+band+glute+medius", "btn": "▶ Video Clamshell"}], "step_list": ["1. Step-Down Box 15cm: 8 rip/lato scendendo in 3'' con tallone che sfiora il suolo in asse col ginocchio.", "2. Clamshell Miniband: 10 rip/lato aprendo il ginocchio senza ruotare il bacino."], "cues": "Ginocchio DX perfettamente dritto sopra la caviglia!", "reg": "Step-down su gradino 5cm / Clamshell a corpo libero.", "prog": "Step-down con manubrio 4kg / Miniband dura.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il vasto mediale per assorbire i tuffi in difesa.", "safety_note": "Stabilità dinamica.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Box Squat a 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore con Manubri su Panca Inclinata", "url": "https://www.youtube.com/results?search_query=chest+supported+dumbbell+row", "btn": "▶ Video Rematore Panca"}], "step_list": ["A1. Goblet Box Squat: 8 rip toccando la panca (45cm) con manubrio al petto (discesa in 3'').", "A2. Rematore a Busto Appoggiato: 8 rip con petto sulla panca tirando i manubri verso i fianchi."], "cues": "Busto compatto, gomiti vicini al corpo nel rematore.", "reg": "Goblet Squat corpo libero / Rematore con elastico.", "prog": "Goblet Squat manubrio 8-10kg / Rematore manubri 6+6kg.", "individual_focus": "GOBLET SQUAT: Busto verticale e zero carico a sbalzo sulla colonna e rotule.", "safety_note": "Ginocchia in asse.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con bilanciere imbottito (tenuta 2'').", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45°."], "cues": "Spingi dai talloni, strizza i glutei in cima.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "HIP THRUST: Costruisce la massima spinta orizzontale per i recuperi in tuffo a ginocchia scariche.", "safety_note": "Spinta glutea pura.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 25''<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Plank Frontale con Tenuta Gomiti Stretti", "url": "https://www.youtube.com/results?search_query=front+plank+form", "btn": "▶ Video Plank"}, {"code": "", "name": "2. Decompressione Spalliera & Quadricipiti", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Spalliera"}], "step_list": ["1. Plank Frontale: 3 serie da 25 secondi spingendo via il pavimento con i gomiti e glutei contratti.", "2. Scarico: 2 minuti di sospensione alla spalliera e allungamento quadricipiti."], "cues": "Linea retta testa-bacino-talloni, addome di roccia.", "reg": "", "prog": "", "individual_focus": "Core rigido per resistere agli impatti in tuffo.", "safety_note": "Scarico articolare completo a fine seduta.", "log_tag": null}]}, {"id": "federica_barraco", "name": "Federica Barraco", "role": "Schiacciatrice & Libero", "risk_badge": "🟡 Fascia Gialla (Sclerosi Multipla - Gestione Fatica Centrale)", "mission": "Efficienza neuromuscolare, ampio buffer (RPE 5-6), stabilità caviglie e controllo termico/idrico.", "clinical_summary": "Diagnosi di Sclerosi Multipla ben compensata con affaticamento centrale neuromuscolare prevalente all'arto superiore destro dominante; instabilità funzionale delle caviglie.", "video_findings": "Flessione corretta e coordinata; lieve calo di reclutamento al braccio destro verso fine serie ad alto volume; ottima motivazione e risposta ai carichi moderati.", "golden_rules_html": "\n                <div>• <strong>1. Ampio Buffer Obbligatorio (RPE 5–6):</strong> Mai arrivare a cedimento o esaurimento neurale.</div>\n                <div>• <strong>2. Pause Piene & Idratazione Continua:</strong> Prevenzione dell'innalzamento termico corporeo.</div>\n                <div>• <strong>3. Stabilità Caviglie & Propriocezione:</strong> Esercizi di controllo neuromuscolare su 1 piede.</div>\n            ", "forbidden_movements": "Serie a sfinimento (RPE 10), ambienti caldi non ventilati senza acqua, balzi pliometrici ad alto volume.", "roadmap_fase1": "Adattamento neuromuscolare controllato (RPE 5) + lavoro di propriocezione caviglie e idratazione continua.", "roadmap_fase2": "Consolidamento forza a buffer 4-5 rip (RPE 6) con pause piene tra le serie.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller leggero su polpacci e catena posteriore (2' a ritmo rilassato).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Circonduzioni caviglie e mobilità d'anca su cuscino propriocettivo (2 serie × 10 movimenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Allungamento dinamico dolce per pettorali e braccia (60''/lato senza forzare).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo Neuromuscolare:</strong> Attivazione con elastico leggero per braccio DX a presa neutra (3 serie × 10 rip).</div>\n            ", "prehab_campo_3min": "Mobilità dolce caviglie e braccia, respirazione profonda e attivazione ritmica.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità caviglie e polsi:</strong> Circonduzioni lente a terra (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Propriocezione su 1 piede (2 serie × 20''/lato):</strong> Controllo stabilità caviglia pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Passi laterali a ginocchia morbide con miniband (2 serie × 8 passi):</strong> Reattività.</div>\n                <div class=\"prehab-item-card\"><strong>4. Saltelli ritmici leggeri sul posto (2 serie × 10 stacchi):</strong> Elasticità a basso impatto.</div>\n            ", "session": [{"phase_title": "Prehab Neuromuscolare", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Catena Posteriore", "url": "https://www.youtube.com/results?search_query=foam+roller+hamstring+calf+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglie su Cuscino", "url": "https://www.youtube.com/results?search_query=ankle+proprioception+cushion", "btn": "▶ Video Caviglie Cuscino"}, {"code": "", "name": "3. Stretch Pettorali Dolce", "url": "https://www.youtube.com/results?search_query=doorway+pec+stretch+gentle", "btn": "▶ Video Stretch Pettorale"}, {"code": "", "name": "4. Attivazione Elastico Braccio DX", "url": "https://www.youtube.com/results?search_query=band+pull+apart+gentle", "btn": "▶ Video Elastico Spalle"}], "step_list": ["Foam roller leggero: 2 minuti continui a ritmo rilassato.", "Mobilità caviglie: 10 movimenti lenti controllando l'equilibrio.", "Stretch dolce: 60 secondi per lato respirando regolarmente.", "Attivazione elastico braccio DX: 3 serie da 10 rip a presa neutra senza affaticare la spalla."], "cues": "Movimenti lenti e precisi, bevi un sorso d'acqua tra una stazione e l'altra.", "reg": "", "prog": "", "individual_focus": "Prehab neuromuscolare a basso impatto per risvegliare i recettori articolari.", "safety_note": "Zero affaticamento precoce.", "log_tag": null}, {"phase_title": "Attivazione Propriocezione & Scapole", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 5 (Buffer 5)</strong><br>Rec: 60'' tra serie", "ex_list": [{"code": "", "name": "1. Equilibrio Monopodalico su Cuscino / Airex", "url": "https://www.youtube.com/results?search_query=single+leg+balance+airex+pad", "btn": "▶ Video Equilibrio Airex"}, {"code": "", "name": "2. Scapular Wall Slides a W", "url": "https://www.youtube.com/results?search_query=scapular+wall+slides+technique", "btn": "▶ Video Wall Slides"}], "step_list": ["1. Equilibrio Monopodalico: 20 secondi per lato mantenendo la caviglia stabile senza oscillare.", "2. Scapular Wall Slides: 8 rip lente facendo scorrere gli avambracci sul muro."], "cues": "Fissa un punto fermo davanti a te per mantenere l'equilibrio!", "reg": "Equilibrio a terra a occhi aperti / Wall slides a corpo libero.", "prog": "Equilibrio su Airex lanciando una pallina / Wall slides con miniband.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Allena la propriocezione delle caviglie e stabilizza il braccio DX.", "safety_note": "Massima precisione.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "3–4 serie × 8 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 45'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Squat su Box 80° (Manubrio Leggero)", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore a Presa Neutra al TRX / Cavo", "url": "https://www.youtube.com/results?search_query=neutral+grip+lat+row+cable", "btn": "▶ Video Rematore TRX"}], "step_list": ["A1. Goblet Squat su Box: 8 rip toccando la panca con un manubrio leggero da 4-6kg (discesa 3'').", "A2. Rematore Presa Neutra: 8 rip tirando verso il busto a gomiti bassi e polsi dritti."], "cues": "Esecuzione fluida, respira costantemente senza andare mai in apnea.", "reg": "Goblet Squat corpo libero / Rematore con elastico leggero.", "prog": "Goblet Squat manubrio 6-8kg / Rematore TRX a corpo inclinato.", "individual_focus": "BUFFER AMPIO: Fermati sempre con 4 ripetizioni di riserva per non accumulare fatica centrale.", "safety_note": "Movimenti armoniosi.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "3–4 serie × 8 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 45'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Romanian Deadlift con Manubri Leggeri", "url": "https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+light", "btn": "▶ Video RDL Manubri"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Romanian Deadlift: 8 rip flettendo il bacino indietro a schiena dritta con manubri da 4-6kg.", "B2. Dumbbell Floor Press: 8 rip distesa a terra a gomiti a 45° con manubri leggeri."], "cues": "Spingi dai talloni nell'RDL; sfiora il pavimento nel Floor Press.", "reg": "Glute Bridge a terra / Floor press manubri 3+3kg.", "prog": "RDL manubri 6+6kg / Floor press manubri 5+5kg.", "individual_focus": "FLOOR PRESS: Il pavimento garantisce massimo controllo e sicurezza al braccio destro.", "safety_note": "Zero sovraccarico.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 6 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill Controllato", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione Rilassata & Respirazione", "url": "https://www.youtube.com/results?search_query=diaphragmatic+breathing+relaxation", "btn": "▶ Video Respirazione"}], "step_list": ["1. Dead Bug McGill: 3 serie da 6 rip per lato a ritmo lento a schiena incollata a terra.", "2. Defaticamento: 2 minuti di respirazione diaframmatica guidata a terra per abbassare la fatica."], "cues": "Respira profondamente con la pancia.", "reg": "", "prog": "", "individual_focus": "Nessun cedimento muscolare.", "safety_note": "Recupero completo e idratazione a fine seduta.", "log_tag": null}]}, {"id": "giulia_cusimano", "name": "Giulia Cusimano", "role": "Centrale / Schiacciatrice (23 Anni)", "risk_badge": "🟡 Fascia Gialla (Tensione Ileopsoas / Sinfisi Pubica)", "mission": "Decompressione catena anteriore profonda, estensione pura d'anca con glutei e stabilità lombo-pelvica.", "clinical_summary": "Tensione e retrazione bilaterale dell'Ileopsoas con sovraccarico dei flessori d'anca nei salti a muro; lieve sensibilità alla sinfisi pubica da compenso dell'antiversione del bacino.", "video_findings": "Flessione profonda corretta ma con tendenza all'iperlordosi compensatoria in fase di spinta; necessità di attivare i glutei per inibire lo psoas.", "golden_rules_html": "\n                <div>• <strong>1. Couch Stretch Profondo (90''/lato):</strong> Allungamento psoas obbligatorio prima dei pesi.</div>\n                <div>• <strong>2. Barbell Hip Thrust Pesante:</strong> Inibizione reciproca dello psoas tramite i glutei.</div>\n                <div>• <strong>3. Sumo Deadlift con Manubrio:</strong> Bacino neutro e zero iperlordosi lombare.</div>\n            ", "forbidden_movements": "Crunch classici a gambe tese, squat profondo a bacino retroverso, iperestensioni lombari forzate.", "roadmap_fase1": "Decompressione psoas (Couch Stretch quotidiano) + attivazione glutei e Hip Thrust a RPE 6.", "roadmap_fase2": "Incremento forza di estensione d'anca (Hip Thrust & Sumo Deadlift a RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller e pallina su flessori d'anca e tensore fascia lata (2' per liberare il bacino).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Mobilità d'anca 90/90 a terra con transizioni lente (2 serie × 8 cicli).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch profondo alla panca a bacino retroverso (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Attivazione:</strong> Glute Bridge Isometrico a 1 gamba a terra (3 serie × 25'' hold/lato).</div>\n            ", "prehab_campo_3min": "Mobilità dinamica anche e caviglie, affondi dinamici lenti e aperture toraciche.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità dinamica bacino:</strong> Circonduzioni e aperture anca (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Affondi dinamici posteriori con braccia in alto (2 serie × 6/lato):</strong> Stretch psoas pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Monster Walk con miniband (2 serie × 10 passi):</strong> Attivazione gluteo medio.</div>\n                <div class=\"prehab-item-card\"><strong>4. Skip A controllato a busto eretto (3 serie × 15m):</strong> Bacino neutro in corsa.</div>\n            ", "session": [{"phase_title": "Prehab Psoas & Bacino", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Flessori Anca & TFL", "url": "https://www.youtube.com/results?search_query=foam+roller+hip+flexor+tfl", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Anca 90/90 a Terra", "url": "https://www.youtube.com/results?search_query=90+90+hip+mobility+stretch", "btn": "▶ Video 90/90 Stretch"}, {"code": "", "name": "3. Couch Stretch Profondo Panca", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Glute Bridge Isometrico 1 Gamba", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge+isometric", "btn": "▶ Video Glute Bridge Iso"}], "step_list": ["Foam roller flessori anca: 2 minuti per decontrarre la zona inguinale e il tensore fascia lata.", "Mobilità 90/90: 8 transizioni lente passando da un lato all'altro a busto eretto.", "Couch stretch profondo: 90 secondi per lato strizzando il gluteo della gamba posteriore.", "Glute Bridge isometrico: 3 serie da 25'' hold per lato a bacino perfettamente allineato."], "cues": "Strizza forte il gluteo nel Couch Stretch per far rilassare lo psoas.", "reg": "", "prog": "", "individual_focus": "Allungare lo psoas è la chiave per togliere tensione alla sinfisi pubica.", "safety_note": "Zero fastidio pubico.", "log_tag": null}, {"phase_title": "Attivazione Glutei & Core", "time_badge": "12 minuti", "dose_badge": "3 serie × 8 rip/lato<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Single-Leg Glute Bridge a Terra (2'' hold)", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge", "btn": "▶ Video Single Glute Bridge"}, {"code": "", "name": "2. McGill Bird-Dog a Terra", "url": "https://www.youtube.com/results?search_query=mcgill+bird+dog", "btn": "▶ Video Bird-Dog"}], "step_list": ["1. Single-Leg Glute Bridge: 8 rip/lato spingendo dal tallone con 2'' di tenuta ferma in cima.", "2. McGill Bird-Dog: 6 rip/lato stendendo braccio e gamba opposta a colonna neutra."], "cues": "Spingi dal tallone e non inarcare la schiena in cima!", "reg": "Glute bridge a due piedi / Bird-dog a corpo libero.", "prog": "Glute bridge con elastico / Bird-dog con 4'' hold.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Attiva i glutei come estensori primari dell'anca.", "safety_note": "Bacino neutro.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Dumbbell Sumo Deadlift su Step", "url": "https://www.youtube.com/results?search_query=dumbbell+sumo+deadlift+elevated", "btn": "▶ Video Sumo Manubrio"}, {"code": "A2", "name": "Rematore con Manubri a Presa Neutra", "url": "https://www.youtube.com/results?search_query=neutral+grip+dumbbell+row", "btn": "▶ Video Rematore Neutro"}], "step_list": ["A1. Sumo Deadlift con Manubrio: 8 rip piedi larghi su step, manubrio pesante tenuto verticale a busto eretto.", "A2. Rematore Presa Neutra: 8 rip con manubri a gomiti bassi tirando verso i fianchi."], "cues": "Spingi con i talloni aprendo le ginocchia in fuori, colonna solida.", "reg": "Sumo squat corpo libero / Rematore con elastico.", "prog": "Sumo Deadlift manubrio 16-20kg / Rematore manubri 8+8kg.", "individual_focus": "SUMO DEADLIFT: Busto eretto e reclutamento potente degli adduttori e glutei.", "safety_note": "Schiena neutra.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con bilanciere imbottito (tenuta 2'').", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45°."], "cues": "Strizza forte i glutei in cima all'Hip Thrust.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "HIP THRUST: Vince la retrazione dello psoas e costruisce salto a muro puro.", "safety_note": "Spinta dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Allungamento<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Stretch Rilassato Psoas & Flessori", "url": "https://www.youtube.com/results?search_query=psoas+gentle+relaxation+stretch", "btn": "▶ Video Stretch Psoas"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena incollata a terra.", "2. Defaticamento: 2 minuti di allungamento dolce flessori d'anca a terra."], "cues": "Schiena incollata al pavimento, respira regolarmente.", "reg": "", "prog": "", "individual_focus": "Core rigido anti-iperlordosi.", "safety_note": "Scarico completo della catena anteriore a fine seduta.", "log_tag": null}]}, {"id": "greta_grimaudo", "name": "Greta Grimaudo", "role": "Alzatrice / Giocatrice", "risk_badge": "🟡 Fascia Gialla (Post-Cesareo & Controllo Trasverso)", "mission": "Risveglio del trasverso dell'addome, sinergia lombo-pelvica e spinta verticale reattiva al palleggio.", "clinical_summary": "Esiti di parto con taglio cesareo con perdita temporanea di sensibilità neuromuscolare della parete addominale profonda; necessità di reclutare il trasverso ed evitare iperpressioni viscerali.", "video_findings": "Buona mobilità articolare generale; leggera tendenza a cedere con la parete addominale sotto carico assiale; ottima reattività mani-piedi nel palleggio.", "golden_rules_html": "\n                <div>• <strong>1. Dead Bug & Modified Curl-up McGill:</strong> Attivazione del trasverso profondo.</div>\n                <div>• <strong>2. Espirazione Forzata nello Sforzo:</strong> Zero iperpressioni intra-addominali a glottide chiusa.</div>\n                <div>• <strong>3. Goblet Squat su Box:</strong> Busto verticale e controllo del cilindro addominale.</div>\n            ", "forbidden_movements": "Crunch classici, sit-up, plank prolungati con cedimento lombare, manovra di Valsalva massimale.", "roadmap_fase1": "Riattivazione trasverso (Dead Bug & Curl-up McGill quotidiani) + Goblet Squat box a RPE 5-6.", "roadmap_fase2": "Consolidamento forza e stabilità lombo-pelvica sotto carico dinamico (RPE 6-7).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su glutei e tratto lombare alto (2' a ritmo rilassato).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cat-Camel con respirazione diaframmatica guidata (8 cicli lenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> 90/90 Hip Stretch a terra a colonna neutra (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Attivazione:</strong> Modified Curl-up McGill (3 serie × 6 rip · 6'' hold a schiena neutra).</div>\n            ", "prehab_campo_3min": "Mobilità attiva spalle, rotazioni dolci del tronco e circonduzioni caviglie.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità toracica e polsi:</strong> Aperture controllate per il palleggio (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Pallof Press in piedi con elastico (2 serie × 8/lato · 3'' hold):</strong> Stabilità core pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Glute Bridge a 2 piedi a terra (2 serie × 10 rip):</strong> Risveglio glutei.</div>\n                <div class=\"prehab-item-card\"><strong>4. Corsa calciata dietro a busto eretto (3 serie × 15m):</strong> Controllo addominale in moto.</div>\n            ", "session": [{"phase_title": "Prehab Core Post-Cesareo", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Glutei & Schiena", "url": "https://www.youtube.com/results?search_query=foam+roller+glute+piriformis+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Cat-Camel Respirazione Diaframmatica", "url": "https://www.youtube.com/results?search_query=cat+camel+mcgill", "btn": "▶ Video Cat-Camel"}, {"code": "", "name": "3. 90/90 Hip Mobility Stretch", "url": "https://www.youtube.com/results?search_query=90+90+hip+mobility+stretch", "btn": "▶ Video 90/90 Stretch"}, {"code": "", "name": "4. Modified Curl-up McGill", "url": "https://www.youtube.com/results?search_query=mcgill+curl+up", "btn": "▶ Video Curl-up"}], "step_list": ["Foam roller glutei: 2 minuti continui per sciogliere la muscolatura pelvica.", "Cat-Camel dolce: 8 cicli coordinando l'espirazione con la contrazione addominale.", "90/90 Hip Stretch: 90 secondi per lato mantenendo la schiena dritta.", "Modified Curl-up: 3 serie da 6 rip (6 secondi di tenuta a ogni rip)."], "cues": "Espira a fondo risucchiando leggermente l'ombelico verso la colonna.", "reg": "", "prog": "", "individual_focus": "Riattiva il trasverso dell'addome prima di maneggiare i pesi.", "safety_note": "Zero sforzo a glottide chiusa.", "log_tag": null}, {"phase_title": "Attivazione Core & Stabilità", "time_badge": "12 minuti", "dose_badge": "3 serie × 8 rip/lato<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Pallof Press con Elastico al Palo", "url": "https://www.youtube.com/results?search_query=pallof+press+band", "btn": "▶ Video Pallof Press"}, {"code": "", "name": "2. Single-Leg Glute Bridge a Terra", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge", "btn": "▶ Video Single Glute Bridge"}], "step_list": ["1. Pallof Press: 8 rip/lato spingendo l'elastico avanti e tenendo 3'' fermo (anti-rotazione).", "2. Glute Bridge Monopodalico: 8 rip/lato spingendo dal tallone per attivare i glutei."], "cues": "Corpo solido come una roccia, non farti ruotare dall'elastico!", "reg": "Pallof press elastico leggero / Glute bridge a due piedi.", "prog": "Pallof press elastico medio / Glute bridge con 2'' hold.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il cilindro addominale profondo anti-rotazione.", "safety_note": "Tenuta perfetta.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Squat su Box 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore al TRX / Cavo Basso", "url": "https://www.youtube.com/results?search_query=trx+row+technique", "btn": "▶ Video Rematore TRX"}], "step_list": ["A1. Goblet Squat su Box: 8 rip toccando la panca con manubrio verticale al petto (discesa 3'').", "A2. Rematore TRX: 8 rip a gomiti stretti tirando il petto verso le maniglie e strizzando le scapole."], "cues": "Espira salendo dallo squat; mantieni il busto verticale.", "reg": "Goblet Squat corpo libero / Rematore cavo leggero.", "prog": "Goblet Squat manubrio 8-10kg / Rematore TRX inclinato.", "individual_focus": "GOBLET SQUAT: Il manubrio al petto attiva il core anteriore proteggendo la schiena.", "safety_note": "Busto eretto.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Romanian Deadlift con Manubri", "url": "https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+light", "btn": "▶ Video RDL Manubri"}, {"code": "B2", "name": "Push-up su Panca Inclinata", "url": "https://www.youtube.com/results?search_query=incline+bench+pushup", "btn": "▶ Video Push-up Panca"}], "step_list": ["B1. Romanian Deadlift: 8-10 rip flettendo il bacino indietro a schiena dritta con manubri aderenti alle gambe.", "B2. Push-up su Panca: 8 rip mantenendo il corpo in asse come una tavola (discesa 2'')."], "cues": "Spingi dai talloni nell'RDL; corpo compatto nel push-up.", "reg": "RDL manubri leggeri 4+4kg / Push-up al muro.", "prog": "RDL manubri 6+6kg / Push-up su panca bassa.", "individual_focus": "RDL & PUSH-UP: Esercizi completi a presa neutra che rinforzano la postura.", "safety_note": "Controllo addominale.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione Schiena & Respirazione", "url": "https://www.youtube.com/results?search_query=diaphragmatic+breathing+relaxation", "btn": "▶ Video Respirazione"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena incollata a terra.", "2. Defaticamento: 2 minuti di respirazione diaframmatica guidata a terra."], "cues": "Schiena piatta a terra, espira profondamente ad ogni estensione.", "reg": "", "prog": "", "individual_focus": "Attivazione selettiva trasverso profondo.", "safety_note": "Rilassamento lombo-pelvico completo a fine seduta.", "log_tag": null}]}, {"id": "ilenia_montalto", "name": "Ilenia Montalto", "role": "Schiacciatrice", "risk_badge": "🟡 Fascia Gialla (Sindrome Cervico-Scapolo-Brachiale & Spalla DX)", "mission": "Decomprimere il tratto cervicale, centrare la testa omerale ed eliminare i compensi del trapezio superiore.", "clinical_summary": "Infiammazione cronica della spalla destra con dolore irradiato al gomito e frequente cervicalgia miotensiva; necessità di correggere il ritmo scapolo-toracico e scaricare il collo.", "video_findings": "Elevazione del trapezio superiore destro durante il caricamento del braccio; mobilità del treno inferiore ottima; buona coordinazione globale.", "golden_rules_html": "\n                <div>• <strong>1. Decontrazione Trapezio Superiore & Pallina:</strong> Scarico miofasciale pre-pesi.</div>\n                <div>• <strong>2. Protocollo Jobe 0° con Asciugamano:</strong> Centratura omero e lavoro a gomito addotto.</div>\n                <div>• <strong>3. Floor Press & Rematore a Presa Neutra:</strong> Zero stress su cervicale e gomito.</div>\n            ", "forbidden_movements": "Scrollate spalle (shrugs forzati), trazioni alla sbarra prone, alzate sopra la testa con schiena inarcata.", "roadmap_fase1": "Decontrazione cervicale e centratura cuffia (Jobe 0° quotidiano) + Floor Press a RPE 5-6.", "roadmap_fase2": "Incremento forza di trazione e stabilizzazione scapolare a presa neutra (RPE 6-7).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Pallina da lacrosse su trapezio superiore e pettorale minore (2' per liberare collo e spalla DX).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Circonduzioni scapolari controllate e mobilità cervicale guidata (2 serie × 10 movimenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Doorway Pec Stretch delicato a gomito basso 45° (60''/lato tenendo le spalle basse).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Centratura:</strong> Protocollo Jobe a 0° con asciugamano sotto l'ascella (3 serie × 12 rip extrarotazioni).</div>\n            ", "prehab_campo_3min": "Mobilità dolce collo e spalle, rotazioni del tronco e circonduzioni caviglie.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità collo e scapole:</strong> Cerchi lenti e allungamento trapezio (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Extrarotazioni al palo con elastico (2 serie × 10 rip):</strong> Centratura omero pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Movimenti a W e a Y a corpo libero (2 serie × 8 rip):</strong> Stabilizzatori scapolari.</div>\n                <div class=\"prehab-item-card\"><strong>4. Riscaldamento dinamico braccio d'attacco a presa neutra (2 minuti):</strong> Senza impatti bruschi.</div>\n            ", "session": [{"phase_title": "Prehab Cervico-Spalla", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Pallina Lacrosse Trapezio & Pettorale", "url": "https://www.youtube.com/results?search_query=lacrosse+ball+upper+trap+pec+release", "btn": "▶ Video Pallina Trapezio"}, {"code": "", "name": "2. Mobilità Scapolare Controllata", "url": "https://www.youtube.com/results?search_query=scapular+circles+mobility", "btn": "▶ Video Mobilità Scapole"}, {"code": "", "name": "3. Doorway Stretch Gomito Basso", "url": "https://www.youtube.com/results?search_query=doorway+pec+stretch+gentle", "btn": "▶ Video Stretch Pettorale"}, {"code": "", "name": "4. Protocollo Jobe 0° con Asciugamano", "url": "https://www.youtube.com/results?search_query=rotator+cuff+external+rotation+towel", "btn": "▶ Video Jobe Spalla"}], "step_list": ["Pallina lacrosse trapezio: 90 secondi al muro per decontrarre il trapezio superiore DX.", "Mobilità scapolare: 10 cerchi lenti muovendo solo le scapole senza alzare il collo.", "Doorway stretch: 60 secondi per lato a spalle basse lontane dalle orecchie.", "Protocollo Jobe a 0°: 3 serie da 12 rip di extrarotazioni con asciugamano sotto l'ascella."], "cues": "Gomito incollato all'asciugamano, spalle basse e rilassate.", "reg": "", "prog": "", "individual_focus": "Centratura omero fondamentale per togliere tensione alla cervicale e al gomito.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Scapolare & Spalle", "time_badge": "12 minuti", "dose_badge": "3 serie × 10 rip<br><strong>RPE 5–6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Scapular Wall Slides a W", "url": "https://www.youtube.com/results?search_query=scapular+wall+slides+technique", "btn": "▶ Video Wall Slides"}, {"code": "", "name": "2. Face Pull con Elastico al Viso", "url": "https://www.youtube.com/results?search_query=face+pull+band+technique", "btn": "▶ Video Face Pull"}], "step_list": ["1. Scapular Wall Slides: 10 rip lente facendo scorrere gli avambracci sul muro (attivazione dentato).", "2. Face Pull elastico: 12 rip tirando verso il viso a pollici indietro strizzando le scapole."], "cues": "Tieni le spalle basse lontane dalle orecchie durante tutto il movimento!", "reg": "Wall slides a corpo libero / Face pull elastico leggero.", "prog": "Wall slides con miniband ai polsi / Face pull elastico medio.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Deprime e stabilizza le scapole togliendo carico al trapezio.", "safety_note": "Controllo del movimento.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Goblet Squat su Box 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat+technique", "btn": "▶ Video Goblet Squat"}, {"code": "A2", "name": "Rematore con Manubri a Presa Neutra", "url": "https://www.youtube.com/results?search_query=neutral+grip+dumbbell+row", "btn": "▶ Video Rematore Neutro"}], "step_list": ["A1. Goblet Squat: 8 rip con manubrio al petto toccando la panca a 80° (discesa in 3'').", "A2. Rematore a Presa Neutra: 8 rip con manubri a gomiti bassi e palmi paralleli."], "cues": "Polsi dritti in linea con l'avambraccio, collo rilassato.", "reg": "Goblet Squat corpo libero / Rematore con elastico.", "prog": "Goblet Squat manubrio 8-10kg / Rematore manubri 6+6kg.", "individual_focus": "PRESA NEUTRA: Azzeramento totale della torsione su spalla, gomito e collo.", "safety_note": "Gomiti bassi.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Romanian Deadlift con Manubri", "url": "https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift+light", "btn": "▶ Video RDL Manubri"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Romanian Deadlift: 8-10 rip flettendo il bacino indietro a schiena dritta e manubri aderenti alle gambe.", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45°."], "cues": "Sfiora il pavimento con i tricipiti e risali senza sforzare il collo.", "reg": "RDL manubri leggeri 4+4kg / Floor press manubri 4+4kg.", "prog": "RDL manubri 8+8kg / Floor press manubri 6+6kg.", "individual_focus": "FLOOR PRESS: Il pavimento scarica completamente l'articolazione della spalla e la cervicale.", "safety_note": "Esecuzione pulita.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 6 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Bird-Dog Controllato McGill", "url": "https://www.youtube.com/results?search_query=mcgill+bird+dog", "btn": "▶ Video Bird-Dog"}, {"code": "", "name": "2. Decompressione Spalliera & Allungamento Trapezio", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Spalliera"}], "step_list": ["1. Bird-Dog McGill: 3 serie da 6 rip/lato a testa allineata con la colonna (zero tensione al collo).", "2. Scarico finale: 2 minuti di sospensione passiva alla spalliera e allungamento dolce del trapezio."], "cues": "Collo allineato e rilassato, respira regolarmente.", "reg": "", "prog": "", "individual_focus": "Nessun carico assiale o overhead.", "safety_note": "Rilassamento completo cervico-brachiale a fine seduta.", "log_tag": null}]}, {"id": "maria_oddo", "name": "Maria Oddo", "role": "Centrale Senior (42 Anni, 2 Gravidanze)", "risk_badge": "🟡 Fascia Gialla (Degenerazione Meniscale & Cuffia Rotatori)", "mission": "Protezione articolare meniscale, rinforzo cuffia dei rotatori e mantenimento densità di forza a muro.", "clinical_summary": "Degenerazione fisiologica del corno posteriore del menisco mediale e lieve lassità della cuffia dei rotatori; atleta di grande esperienza con necessità di gestione intelligente del recupero articolare.", "video_findings": "Biomeccanica di salto esperta ed economica; flessione controllata su box a ~80°; necessità di proteggere le ginocchia nei salti ripetuti.", "golden_rules_html": "\n                <div>• <strong>1. Box Squat a Tibia Rigorosamente Verticale:</strong> Zero schiacciamento meniscale.</div>\n                <div>• <strong>2. Spanish Squat & Jobe 0° Pre-Seduta:</strong> Protezione combinata ginocchio e spalla.</div>\n                <div>• <strong>3. Barbell Hip Thrust:</strong> Forza pura glutei a zero stress articolare.</div>\n            ", "forbidden_movements": "Squat profondo libero <80°, salti pliometrici duri ad alto impatto, panca piana a gomiti larghi 90°.", "roadmap_fase1": "Adattamento articolare e analgesia (Spanish Squat + Jobe 0°) + Box Squat 80° a RPE 6.", "roadmap_fase2": "Consolidamento forza e densità muscolare catena posteriore (Hip Thrust & RDL a RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su quadricipiti e massaggio pallina su pettorale (2' continui).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglie al muro e cerchi scapolari (2 serie × 10 movimenti lenti).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per flessori d'anca alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico 60° (3 serie × 35'' hold) + Protocollo Jobe 0° (2 serie × 10 rip).</div>\n            ", "prehab_campo_3min": "Mobilità attiva caviglie e spalle, rotazioni toraciche e aperture controllate.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Mobilità caviglie e cingolo:</strong> Allungamento polpacci al palo (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Protezione ginocchia pre-salto.</div>\n                <div class=\"prehab-item-card\"><strong>3. Extrarotazioni al palo con elastico (2 serie × 10 rip):</strong> Centratura spalla pre-muro.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia a 45°.</div>\n            ", "session": [{"phase_title": "Prehab Menisco & Spalla", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipiti & Pettorale", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglie & Scapole", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Flessori Anca", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat 60° & Jobe 0°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipiti e pallina pettorale: 2 minuti per preparare ginocchia e spalle.", "Mobilità caviglie: 10 rip spingendo il ginocchio verso il muro.", "Couch stretch: 90 secondi per lato a schiena neutra.", "Spanish Squat isometrico a 60°: 3 serie da 35'' hold con elastico spesso + 10 extrarotazioni Jobe."], "cues": "Esecuzione controllata e precisa, senti i muscoli caldi e pronti.", "reg": "", "prog": "", "individual_focus": "Protezione combinata ginocchio-spalla prima dei sovraccarichi.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Stabilità & Scapole", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Step-Down Controllato su Box 10cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Scapular Wall Slides a W", "url": "https://www.youtube.com/results?search_query=scapular+wall+slides+technique", "btn": "▶ Video Wall Slides"}], "step_list": ["1. Step-Down Box 10cm: 8 rip/lato scendendo in 3'' con tallone che sfiora il suolo in asse col ginocchio.", "2. Scapular Wall Slides: 8 rip facendo scorrere gli avambracci sul muro."], "cues": "Ginocchio perfettamente dritto sopra la caviglia; spalle basse!", "reg": "Step-down su gradino 5cm / Wall slides a corpo libero.", "prog": "Step-down con manubrio 4kg / Wall slides con miniband.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Protegge il menisco e stabilizza le scapole per il muro.", "safety_note": "Precisione esecutiva.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° con Manubri", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore a Presa Neutra su Panca", "url": "https://www.youtube.com/results?search_query=neutral+grip+dumbbell+row", "btn": "▶ Video Rematore Neutro"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) a tibia rigorosamente verticale (discesa 3'').", "A2. Rematore Presa Neutra: 8 rip con manubri a gomiti bassi e palmi paralleli."], "cues": "Sfiora la panca senza sederti di peso, mantieni le tibie verticali.", "reg": "Box Squat corpo libero / Rematore con elastico.", "prog": "Box Squat manubri 6+6kg / Rematore manubri 6+6kg.", "individual_focus": "TIBIA VERTICALE: Zero schiacciamento sul menisco mediale.", "safety_note": "Controllo articolare.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con bilanciere imbottito (tenuta 2'').", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45°."], "cues": "Spingi dai talloni nell'Hip Thrust; gomiti controllati nel Floor Press.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 6+6kg.", "individual_focus": "HIP THRUST: Massima potenza per il muro a carico ZERO per le ginocchia.", "safety_note": "Spinta pulita dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione Spalliera & Allungamento", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Spalliera"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena a terra.", "2. Scarico: 2 minuti di sospensione alla spalliera e allungamento catena posteriore."], "cues": "Schiena incollata al pavimento, respira profondamente.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare.", "safety_note": "Scarico articolare totale a fine seduta.", "log_tag": null}]}, {"id": "michela_mazzola", "name": "Michela Mazzola", "role": "Schiacciatrice / Opposto (28 Anni)", "risk_badge": "🔴 Fascia Rossa (Ernia Discale L5-S1 Espulsa)", "mission": "Costruire forza ed elevazione in totale sicurezza discale L5-S1 (Spinal Sparing & Sumo con Manubrio).", "clinical_summary": "Ernia discale L5-S1 espulsa (pregressa sciatalgia acuta) e rottura LCA ginocchio SX operata e solida. Asintomatica, ma con timore dei carichi assiali diretti sulla colonna.", "video_findings": "Rigidità del rachide lombare in flessione con compenso dorsale; ottima tenuta e stabilità del ginocchio sinistro; necessità di bracing addominale permanente.", "golden_rules_html": "\n                <div>• <strong>1. Prehab McGill Obbligatorio (Big 3):</strong> Creazione del cilindro addominale protettivo prima dei pesi.</div>\n                <div>• <strong>2. Zero Bilancieri su Colonna:</strong> Sumo Deadlift manubrio su step e Goblet Squat (busto verticale).</div>\n                <div>• <strong>3. Rematore a Petto Appoggiato:</strong> Azzeramento totale del carico di taglio e a sbalzo lombare.</div>\n            ", "forbidden_movements": "Back Squat con bilanciere su colonna, stacco da terra classico a bilanciere dritto con schiena flessa, crunch/sit-up, flesso-torsioni con sovraccarico.", "roadmap_fase1": "Spinal Sparing McGill (Big 3) quotidiano + Sumo Deadlift con Manubrio su Step e Goblet Squat a RPE 6.", "roadmap_fase2": "Incremento densità Sumo Deadlift con manubrio pesante a RPE 7-8 (busto verticale, zero carico a sbalzo).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller & pallina da lacrosse su glutei e piriforme SX (2' per liberare il nervo sciatico).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Cat-Camel per mobilizzazione discale dolce (8 cicli lenti senza forzare il fine corsa).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> 90/90 Hip Stretch a terra per liberare i rotatori dell'anca (90''/lato a colonna neutra).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Modified Curl-up McGill (3 serie × 6 rip · 6'' hold) + Decompressione sbarra (60'').</div>\n            ", "prehab_campo_3min": "Mobilità attiva spalle, circonduzioni caviglie e mobilità anche (zero flesso-torsioni della colonna lombare).", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità dinamica:</strong> Circonduzioni controllate e apertura bacino (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. McGill Bird-Dog a terra (2 serie × 6/lato · 4'' hold):</strong> Attivazione del core rigido a carico zero.</div>\n                <div class=\"prehab-item-card\"><strong>3. Glute Bridge Monopodalico (2 serie × 8 rip/lato):</strong> Sveglia i glutei per estendere l'anca.</div>\n                <div class=\"prehab-item-card\"><strong>4. Skip A a busto eretto (3 serie × 15m):</strong> Consolidamento del bracing addominale in movimento.</div>\n            ", "session": [{"phase_title": "Prehab Spine McGill", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Glutei & Piriforme", "url": "https://www.youtube.com/results?search_query=foam+roller+glute+piriformis+release", "btn": "▶ Video Piriforme"}, {"code": "", "name": "2. Cat-Camel Mobilità Discale", "url": "https://www.youtube.com/results?search_query=cat+camel+mcgill", "btn": "▶ Video Cat-Camel"}, {"code": "", "name": "3. 90/90 Hip Mobility Stretch", "url": "https://www.youtube.com/results?search_query=90+90+hip+mobility+stretch", "btn": "▶ Video 90/90 Stretch"}, {"code": "", "name": "4. Modified Curl-up McGill", "url": "https://www.youtube.com/results?search_query=mcgill+curl+up", "btn": "▶ Video Curl-up"}], "step_list": ["Foam roller e pallina glutei: 2 minuti per decontrarre la zona piriforme e glutea.", "Cat-Camel dolce: 8 cicli lenti respirando profondamente senza inarcare forzatamente.", "90/90 Hip Stretch: 90 secondi per lato mantenendo la colonna neutra.", "Modified Curl-up: 3 serie da 6 rip (6 secondi di tenuta isometrica a ogni ripetizione)."], "cues": "Crea un cilindro d'acciaio attorno alla vita con il bracing senza piegare la schiena.", "reg": "", "prog": "", "individual_focus": "Il prehab McGill è il 'farmaco motorio' obbligatorio per proteggere L5-S1 prima dei carichi.", "safety_note": "Zero flesso-torsioni lombari.", "log_tag": null}, {"phase_title": "Attivazione Core & Glutei", "time_badge": "12 minuti", "dose_badge": "3 serie × 6–8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Bird-Dog Dinamico Tenuta 4''", "url": "https://www.youtube.com/results?search_query=mcgill+bird+dog", "btn": "▶ Video Bird-Dog"}, {"code": "", "name": "2. Single-Leg Glute Bridge a Terra", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge", "btn": "▶ Video Single Glute Bridge"}], "step_list": ["1. Bird-Dog Dinamico: 3 serie da 6 rip/lato stendendo pugno e tallone opposto con 4'' di tenuta ferma in cima.", "2. Glute Bridge Monopodalico: 3 serie da 8 rip/lato spingendo dal tallone per risvegliare l'estensione dell'anca."], "cues": "Colonna perfettamente immobile come un tavolo, muovi solo braccio e gamba!", "reg": "Bird-dog a corpo libero / Glute bridge a due piedi.", "prog": "Bird-dog con pattern quadrati in aria / Glute bridge con elastico.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Attiva gli erettori spinali e i glutei senza comprimere i dischi L5-S1.", "safety_note": "Zero compenso lombare.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 6–8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Sumo Deadlift con Manubrio su Step", "url": "https://www.youtube.com/results?search_query=dumbbell+sumo+deadlift+elevated", "btn": "▶ Video Sumo Manubrio"}, {"code": "A2", "name": "Panca Piana con Piedi su Step", "url": "https://www.youtube.com/results?search_query=dumbbell+bench+press+feet+flat", "btn": "▶ Video Panca Step"}], "step_list": ["A1. Sumo Deadlift con Manubrio: 6-8 rip piedi larghi su step, manubrio pesante tenuto verticale al centro con busto eretto.", "A2. Panca Manubri con Piedi su Step: 8 rip con piedi rialzati per appiattire la lordosi contro lo schienale."], "cues": "Busto verticale, spingi forte con i talloni tenendo il manubrio vicino al baricentro.", "reg": "Sumo squat a corpo libero / Panca a terra (Floor press).", "prog": "Sumo Deadlift con manubrio 16-20kg / Panca manubri 10+10kg.", "individual_focus": "BUSTO VERTICALE: Il manubrio tenuto in mezzo ai piedi azzera il braccio di leva a sbalzo su L5-S1.", "safety_note": "Schiena rigorosamente neutra.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Goblet Squat su Box a 80°", "url": "https://www.youtube.com/results?search_query=goblet+box+squat", "btn": "▶ Video Goblet Squat"}, {"code": "B2", "name": "Rematore su Panca Inclinata 30°", "url": "https://www.youtube.com/results?search_query=chest+supported+dumbbell+row", "btn": "▶ Video Rematore Panca"}], "step_list": ["B1. Goblet Squat su Box 80°: 8 rip con manubrio verticale al petto toccando la panca (zero bilanciere sul collo).", "B2. Rematore a Busto Appoggiato: 8 rip con petto incollato alla panca a 30° tirando i gomiti indietro."], "cues": "Gomiti verso il basso nel Goblet; petto incollato alla panca nel rematore.", "reg": "Goblet Squat a corpo libero / Rematore al cavo seduta.", "prog": "Goblet Squat con manubrio 10-12kg / Rematore manubri 8+8kg.", "individual_focus": "PETTO APPOGGIATO: Azzeramento totale del carico di taglio e a sbalzo sulla colonna lombare.", "safety_note": "Scarico discale perfetto.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 20''/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Side Plank McGill su Ginocchia", "url": "https://www.youtube.com/results?search_query=mcgill+side+plank+knees", "btn": "▶ Video Side Plank"}, {"code": "", "name": "2. Scarico Passivo Sbarra Finale", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Sbarra"}], "step_list": ["1. Side Plank su ginocchia: 3 serie da 20 secondi per lato strizzando i glutei (anti-flessione laterale).", "2. Scarico finale: 2 minuti di decompressione passiva appesa alla spalliera."], "cues": "Linea retta spalla-bacino-ginocchio, addome compatto.", "reg": "", "prog": "", "individual_focus": "Anti-flessione laterale della colonna.", "safety_note": "Stop immediato in caso di formicolio all'arto.", "log_tag": null}]}, {"id": "rossella_fabiano", "name": "Rossella Fabiano", "role": "Schiacciatrice", "risk_badge": "🔴 Fascia Rossa (Gestione Diabete & Tendinopatie Rotulee)", "mission": "Protezione tendinea rotulea bilaterale, densità di forza a carichi controllati (RPE 6) e gestione glucidica.", "clinical_summary": "Diabete di tipo 1 con necessità di rigorosa programmazione dei rifornimenti glucidici pre, intra e post seduta; tendinopatia rotulea bilaterale da sovraccarico eccentrico nei salti.", "video_findings": "Flessione corretta su box a 80°; stabilità dell'arco plantare buona; necessità di monitorare costantemente la fatica e i livelli di energia.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Isometrico 60° (3x40''):</strong> Analgesia tendinea obbligatoria pre-pesi.</div>\n                <div>• <strong>2. Rifornimenti Glucidici & Monitoraggio Glicemia:</strong> Carboidrati a portata di mano.</div>\n                <div>• <strong>3. Box Squat a Tibia Verticale (80°):</strong> Zero carico di taglio sui tendini rotulei.</div>\n            ", "forbidden_movements": "Allenamento a digiuno, balzi pliometrici a freddo, squat profondo a ginocchia libere <80°.", "roadmap_fase1": "Analgesia rotulea (Spanish Squat quotidiano) + monitoraggio glicemico e Box Squat a RPE 6.", "roadmap_fase2": "Incremento densità di forza catena posteriore (Hip Thrust & RDL a RPE 7-8).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su quadricipiti e polpacci (2' per decontrarre l'apparato estensore).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglie al muro a ginocchio in asse (2 serie × 10 rip/lato).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per psoas e retto femorale alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico a 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Mobilità dinamica caviglie e anche, circonduzioni braccia e aperture toraciche.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Allungamento dinamico caviglie:</strong> Spinta al palo e allungamento polpacci (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Protezione tendinea pre-palla.</div>\n                <div class=\"prehab-item-card\"><strong>3. Monster Walk con miniband alle caviglie (2 serie × 10 passi):</strong> Attivazione gluteo medio.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia a 45°.</div>\n            ", "session": [{"phase_title": "Prehab Tendineo & Sistemico", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipiti", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglie al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Flessori Anca", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipiti: 2 minuti per decontrarre l'apparato estensore.", "Mobilità caviglie: 10 rip spingendo il ginocchio verso il muro.", "Couch stretch: 90 secondi per lato a schiena neutra.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso."], "cues": "Controlla di avere a portata di mano acqua e rifornimento glucidico.", "reg": "", "prog": "", "individual_focus": "Spanish Squat fondamentale per inibire il dolore tendineo prima dei carichi.", "safety_note": "Zero dolore articolare.", "log_tag": null}, {"phase_title": "Attivazione Vasto Mediale & Glutei", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Poliquin Step-Down su Box 15cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Clamshell con Miniband al Bacino", "url": "https://www.youtube.com/results?search_query=clamshell+band+glute+medius", "btn": "▶ Video Clamshell"}], "step_list": ["1. Step-Down Box 15cm: 8 rip/lato scendendo in 3'' con tallone che sfiora il suolo in asse col ginocchio.", "2. Clamshell Miniband: 10 rip/lato aprendo il ginocchio senza ruotare il bacino."], "cues": "Ginocchio perfettamente dritto sopra la caviglia, non farlo cedere all'interno!", "reg": "Step-down su gradino 5cm / Clamshell a corpo libero.", "prog": "Step-down con manubrio 4kg / Miniband dura.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il vasto mediale e il gluteo medio anti-valgo.", "safety_note": "Stabilità dinamica.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° con Manubri", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore con Manubri su Panca", "url": "https://www.youtube.com/results?search_query=chest+supported+dumbbell+row", "btn": "▶ Video Rematore Panca"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) a tibia rigorosamente verticale (discesa 3'').", "A2. Rematore su Panca: 8 rip con petto sulla panca tirando i manubri verso i fianchi."], "cues": "Sfiora la panca senza sederti di peso, mantieni le tibie verticali.", "reg": "Box Squat corpo libero / Rematore con elastico.", "prog": "Box Squat manubri 6+6kg / Rematore manubri 6+6kg.", "individual_focus": "TIBIA VERTICALE: Il tendine rotuleo non subisce forze di taglio.", "safety_note": "Ginocchia in asse.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con bilanciere imbottito (tenuta 2'').", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45°."], "cues": "Spingi dai talloni nell'Hip Thrust; gomiti controllati nel Floor Press.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "HIP THRUST: Massima potenza glutea per l'attacco a impatto ZERO per le ginocchia.", "safety_note": "Spinta dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Stretch Dolce Quadricipiti & Defaticamento", "url": "https://www.youtube.com/results?search_query=psoas+bench+stretch", "btn": "▶ Video Stretch Panca"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena a terra.", "2. Defaticamento: 2 minuti di allungamento rilassato quadricipiti e assunzione carboidrati post-workout."], "cues": "Schiena piatta a terra, respira regolarmente.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare.", "safety_note": "Monitoraggio glicemico e recupero completo a fine seduta.", "log_tag": null}]}, {"id": "sabrina_lombardo", "name": "Sabrina Lombardo", "role": "Centrale / Schiacciatrice", "risk_badge": "🟡 Fascia Gialla (Sindrome Femoro-Rotulea Storica)", "mission": "Azzerare lo shear stress rotuleo, costruire massima potenza d'anca nei salti a muro e stabilità femorale.", "clinical_summary": "Pregressa sindrome femoro-rotulea con tendinopatia rotulea bilaterale storica; asintomatica nei test ma con necessità di evitare carichi profondi a ginocchia libere e rinforzare la catena posteriore.", "video_findings": "Buona mobilità d'anca; leggera tendenza a spostare il carico sulle ginocchia nello stacco se non guidata; ottima reattività nei salti verticali.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Isometrico 60° (3x40''):</strong> Obbligatorio prima di toccare i bilancieri.</div>\n                <div>• <strong>2. Box Squat 80° a Tibia Verticale:</strong> La rotula resta completamente protetta.</div>\n                <div>• <strong>3. Barbell Hip Thrust Pesante:</strong> Massima spinta dei glutei a ginocchia scariche.</div>\n            ", "forbidden_movements": "Squat profondo libero <80°, affondi bulgari profondi a ginocchio avanzato, salti con caduta rigida.", "roadmap_fase1": "Analgesia e rinforzo eccentrico (Spanish Squat quotidiano) + Box Squat 80° a RPE 6.", "roadmap_fase2": "Incremento densità di forza neurale (Box Squat & Hip Thrust a RPE 7-8) per salto a muro.", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller su retto femorale e quadricipiti (2' continui per liberare la rotula).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglie al muro a ginocchio in asse (2 serie × 10 rip/lato).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per psoas e retto femorale alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico a 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Mobilità attiva caviglie e rotazioni d'anca, aperture toraciche in piedi.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità al palo:</strong> Allungamento polpacci e tendine d'Achille (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Protezione rotulea pre-salto.</div>\n                <div class=\"prehab-item-card\"><strong>3. Miniband Monster Walk (2 serie × 10 passi):</strong> Attivazione gluteo medio anti-valgo.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia a 45°.</div>\n            ", "session": [{"phase_title": "Prehab Rotuleo & Caviglia", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipiti", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglie al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Psoas", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipiti: 2 minuti continui per allentare la pressione sull'apparato estensore.", "Mobilità caviglie: 10 rip spingendo il ginocchio verso il muro.", "Couch stretch psoas: 90 secondi per lato tenendo l'addome compatto.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso."], "cues": "Stringi l'elastico dietro le ginocchia, busto eretto e senti bruciare i vasti mediali.", "reg": "", "prog": "", "individual_focus": "Lo Spanish Squat protegge l'apparato estensore dall'impatto dei salti a muro.", "safety_note": "Zero dolore rotuleo.", "log_tag": null}, {"phase_title": "Attivazione VMO & Glutei", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Poliquin Step-Down su Box 15cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Single-Leg Glute Bridge a Terra", "url": "https://www.youtube.com/results?search_query=single+leg+glute+bridge", "btn": "▶ Video Single Glute Bridge"}], "step_list": ["1. Step-Down Box 15cm: 8 rip/lato scendendo in 3'' con tallone che sfiora il suolo in asse col ginocchio.", "2. Glute Bridge Monopodalico: 8 rip/lato spingendo dal tallone per risvegliare i glutei."], "cues": "Ginocchio perfettamente dritto sopra la caviglia, non farlo cadere all'interno!", "reg": "Step-down su gradino 5cm / Glute bridge a due piedi.", "prog": "Step-down con manubrio 4kg / Glute bridge con elastico.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il vasto mediale e i glutei anti-valgo per proteggere il salto.", "safety_note": "Allineamento perfetto.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° con Manubri", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore al TRX / Cavo Basso", "url": "https://www.youtube.com/results?search_query=trx+row+technique", "btn": "▶ Video Rematore TRX"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) a tibia rigorosamente verticale (discesa 3'').", "A2. Rematore TRX: 8 rip a gomiti stretti tirando il petto verso le maniglie e strizzando le scapole."], "cues": "Sfiora la panca senza sederti di peso, mantieni le tibie dritte come colonne.", "reg": "Box Squat corpo libero / Rematore al cavo con appoggio.", "prog": "Box Squat manubri 6+6kg / Rematore TRX inclinato.", "individual_focus": "TIBIA VERTICALE: Il ginocchio non supera la caviglia, azzerando lo stress rotuleo.", "safety_note": "Ginocchia in asse.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo forte dai talloni con bilanciere imbottito (tenuta 2'' in cima).", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45° (discesa 2'')."], "cues": "Spingi forte sui talloni e strizza i glutei in cima.", "reg": "Hip Thrust corpo libero / Floor press manubri 4+4kg.", "prog": "Hip Thrust bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "HIP THRUST: Costruisce potenza pura per il muro a ZERO carico sulle ginocchia.", "safety_note": "Spinta potente dai talloni.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Decompressione Spalliera & Flessori", "url": "https://www.youtube.com/results?search_query=passive+hang+spinal+decompression", "btn": "▶ Video Hang Spalliera"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip/lato stendendo braccio e gamba opposta a schiena incollata a terra.", "2. Decompressione: 2 minuti di sospensione passiva alla spalliera e allungamento flessori d'anca."], "cues": "Schiena piatta a terra, addome rigido.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare.", "safety_note": "Scarico articolare completo a fine seduta.", "log_tag": null}]}, {"id": "valentina_goretti", "name": "Valentina Goretti", "role": "Centrale (Maglia #8 · 37 Anni)", "risk_badge": "🔴 Fascia Rossa (Condropatia Rotulea SX)", "mission": "Costruire forza esplosiva al centro e protezione rotulea SX (zero dolore con Spanish Squat).", "clinical_summary": "Condropatia femoro-rotulea di alto grado al ginocchio sinistro con versamento comparto laterale e cisti di Baker. Dolore scatenato da flessioni profonde ad angoli chiusi (<80°). 50 saltelli sul posto e squat a parallelo superati.", "video_findings": "Flessione asimmetrica a favore dell'arto destro; blocco antalgico a ~80° a SX; estensori dell'anca da potenziare per togliere shear stress rotuleo.", "golden_rules_html": "\n                <div>• <strong>1. Spanish Squat Obbligatorio (3x40''):</strong> Inibizione corticale del dolore rotuleo pre-pesi.</div>\n                <div>• <strong>2. Box Squat a Tibia Rigorosamente Verticale:</strong> Il ginocchio non supera mai la caviglia.</div>\n                <div>• <strong>3. Carico su Glutei & Catena Posteriore (Hip Thrust):</strong> Forza pura a zero stress rotula.</div>\n            ", "forbidden_movements": "Back Squat profondo libero a terra (<80°), affondi bulgari profondi, drop jump da box, salti con atterraggio rigido.", "roadmap_fase1": "Analgesia quotidiana (Spanish Squat 60°) + Box Squat 80° tibia verticale a RPE 6 (carichi moderati).", "roadmap_fase2": "Progressione di carico su Box Squat a RPE 7-8 + incremento forza catena posteriore (Hip Thrust & RDL).", "prehab_pesi_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release Miofasciale:</strong> Foam roller quadricipite & retto femorale SX (2' lenti per scaricare la rotula).</div>\n                <div class=\"prehab-item-card\"><strong>2. Mobilità Selettiva:</strong> Dorsiflessione caviglia SX al muro (2 serie × 10 rip a ginocchio in asse).</div>\n                <div class=\"prehab-item-card\"><strong>3. Flessibilità & Stretch:</strong> Couch Stretch per psoas e flessori d'anca SX alla panca (90''/lato).</div>\n                <div class=\"prehab-item-card\"><strong>4. Controllo & Analgesia:</strong> Spanish Squat Isometrico a 60° con elastico spesso (3 serie × 40'' hold).</div>\n            ", "prehab_campo_3min": "Circonduzioni caviglie, mobilità d'anca 90/90 a terra e aperture toraciche in piedi.", "prehab_campo_7min_structured": "\n                <div class=\"prehab-item-card\"><strong>1. Release/Mobilità al palo:</strong> Allungamento dinamico polpacci e tendine d'Achille (90'').</div>\n                <div class=\"prehab-item-card\"><strong>2. Spanish Squat al palo con elastico (2 serie × 30'' hold):</strong> Analgesia rotulea pre-impatto.</div>\n                <div class=\"prehab-item-card\"><strong>3. Monster Walk con miniband alle caviglie (2 serie × 10 passi):</strong> Attivazione gluteo medio.</div>\n                <div class=\"prehab-item-card\"><strong>4. Stick Landing a 2 piedi (3 serie × 4 stacchi da 5cm):</strong> Arresto statua 2'' a ginocchia 45°.</div>\n            ", "session": [{"phase_title": "Prehab Rotula & Bacino", "time_badge": "15 minuti", "dose_badge": "1 giro completo<br>(4 stazioni)", "ex_list": [{"code": "", "name": "1. Foam Roller Quadricipite SX", "url": "https://www.youtube.com/results?search_query=foam+roller+quadriceps+release", "btn": "▶ Video Foam Roller"}, {"code": "", "name": "2. Mobilità Caviglia SX al Muro", "url": "https://www.youtube.com/results?search_query=ankle+dorsiflexion+wall+mobility", "btn": "▶ Video Caviglia"}, {"code": "", "name": "3. Couch Stretch Psoas SX", "url": "https://www.youtube.com/results?search_query=couch+stretch+hip+flexor", "btn": "▶ Video Couch Stretch"}, {"code": "", "name": "4. Spanish Squat Isometrico 60°", "url": "https://www.youtube.com/results?search_query=spanish+squat+isometric", "btn": "▶ Video Spanish Squat"}], "step_list": ["Foam roller quadricipite SX: 2 minuti continui per allentare la pressione sulla rotula.", "Mobilità caviglia SX: 10 rip spingendo il ginocchio verso il muro senza staccare il tallone.", "Couch stretch psoas: 90 secondi per lato tenendo l'addome compatto.", "Spanish Squat isometrico a 60°: 3 serie da 40'' hold con elastico spesso (effetto analgesico 45')."], "cues": "Stringi l'elastico dietro le ginocchia, busto eretto e senti bruciare i vasti mediali.", "reg": "", "prog": "", "individual_focus": "Eseguire SEMPRE lo Spanish Squat PRIMA dei pesi per inibire il dolore al ginocchio SX.", "safety_note": "Zero dolore durante il prehab.", "log_tag": null}, {"phase_title": "Attivazione Debolezze & VMO", "time_badge": "12 minuti", "dose_badge": "3 serie × 8–10 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Step-Down Controllato su Box 15cm", "url": "https://www.youtube.com/results?search_query=poliquin+step+down+technique", "btn": "▶ Video Step-Down"}, {"code": "", "name": "2. Clamshell con Miniband al Bacino", "url": "https://www.youtube.com/results?search_query=clamshell+band+glute+medius", "btn": "▶ Video Clamshell"}], "step_list": ["1. Step-Down Box 15cm: 8 rip/lato scendendo in 3'' con tallone che sfiora terra (ginocchio SX in asse col 2° dito).", "2. Clamshell Miniband: 10 rip/lato aprendo il ginocchio senza ruotare il bacino (rinforzo gluteo medio)."], "cues": "Ginocchio SX perfettamente dritto sopra la caviglia, non farlo cadere all'interno!", "reg": "Step-down su gradino 5cm / Clamshell a corpo libero.", "prog": "Step-down con manubrio 4kg / Miniband dura.", "individual_focus": "LAVORO SPECIFICO DEBOLEZZE: Rinforza il Vasto Mediale Obliquo (VMO) e il gluteo medio anti-valgo.", "safety_note": "Massimo allineamento ginocchio-piede.", "log_tag": null}, {"phase_title": "Forza Superset A", "time_badge": "16 minuti", "dose_badge": "4 serie × 8 rip<br><strong>RPE 6 (Buffer 4)</strong><br>Rec: 30'' A1-A2, 90'' giro", "ex_list": [{"code": "A1", "name": "Box Squat a 80° (Panca 45cm)", "url": "https://www.youtube.com/results?search_query=box+squat+technique+vertical+shins", "btn": "▶ Video Box Squat 80°"}, {"code": "A2", "name": "Rematore TRX / Cavo Basso", "url": "https://www.youtube.com/results?search_query=trx+row+technique", "btn": "▶ Video Rematore TRX"}], "step_list": ["A1. Box Squat a 80°: 8 rip toccando la panca (45cm) con tibia rigorosamente verticale (discesa in 3'').", "A2. Rematore TRX: 8 rip a gomiti stretti tirando il petto verso le maniglie e strizzando le scapole."], "cues": "Sfiora la panca senza sederti di peso, mantieni le tibie dritte come due colonne.", "reg": "Box Squat a corpo libero / Rematore al cavo con appoggio torace.", "prog": "Box Squat 80° con manubri 6+6kg / Rematore TRX a corpo molto inclinato.", "individual_focus": "TIBIA VERTICALE: Il ginocchio SX non deve MAI andare avanti oltre la caviglia.", "safety_note": "Stop se avverte pressione retro-rotulea.", "log_tag": "SUPERSET_A"}, {"phase_title": "Forza Superset B", "time_badge": "16 minuti", "dose_badge": "4 serie × 8–10 rip<br><strong>RPE 6–7 (Buffer 3)</strong><br>Rec: 30'' B1-B2, 90'' giro", "ex_list": [{"code": "B1", "name": "Barbell Hip Thrust su Panca", "url": "https://www.youtube.com/results?search_query=barbell+hip+thrust+form", "btn": "▶ Video Hip Thrust"}, {"code": "B2", "name": "Dumbbell Floor Press a Terra", "url": "https://www.youtube.com/results?search_query=dumbbell+floor+press", "btn": "▶ Video Floor Press"}], "step_list": ["B1. Barbell Hip Thrust: 8-10 rip spingendo dai talloni con bilanciere imbottito (tenuta 2'' in cima).", "B2. Dumbbell Floor Press: 8 rip di distensioni con manubri a terra a gomiti a 45° (discesa controllata 2'')."], "cues": "Spingi forte sui talloni e strizza i glutei in cima come se dovessi rompere una noce.", "reg": "Hip Thrust monopodalico a corpo libero / Floor press manubri leggeri 4kg.", "prog": "Hip Thrust con bilanciere 20-30kg / Floor press manubri 8+8kg.", "individual_focus": "L'Hip Thrust costruisce forza pura sui glutei a ZERO stress per la rotula SX.", "safety_note": "Protezione trocleare perfetta.", "log_tag": "SUPERSET_B"}, {"phase_title": "Core & Scarico", "time_badge": "10 minuti", "dose_badge": "3 serie × 8 rip/lato<br>2' Decompressione<br>Rec: 45'' tra serie", "ex_list": [{"code": "", "name": "1. Dead Bug McGill a Terra", "url": "https://www.youtube.com/results?search_query=dead+bug+mcgill", "btn": "▶ Video Dead Bug"}, {"code": "", "name": "2. Stretch Flessori alla Panca", "url": "https://www.youtube.com/results?search_query=psoas+bench+stretch", "btn": "▶ Video Stretch Panca"}], "step_list": ["1. Dead Bug McGill: 3 serie da 8 rip per lato stendendo braccio e gamba opposta a schiena incollata a terra.", "2. Decompressione e Stretch: 2 minuti di allungamento dolce a gamba distesa sulla panca."], "cues": "Schiena piatta a terra, non staccare mai la zona lombare dal pavimento.", "reg": "", "prog": "", "individual_focus": "Nessun compenso lombare durante il Dead Bug.", "safety_note": "Monitorare assenza di gonfiore/cisti a fine seduta.", "log_tag": null}]}];
+    
+    let currentAthlete = TEAM_DATA[0];
+    let currentWeek = 1;
+    let weekToDelete = null;
+
+    function initApp() {
+        const savedId = localStorage.getItem('tp_volley_selected_athlete');
+        if (savedId) {
+            const found = TEAM_DATA.find(a => a.id === savedId);
+            if (found) currentAthlete = found;
+        }
+        
+        const sel = document.getElementById('athlete-select');
+        if (sel) sel.value = currentAthlete.id;
+        renderAthleteView();
+    }
+
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+    setTimeout(initApp, 100);
+
+    function populateAthleteDropdown() {
+        const sel = document.getElementById('athlete-select');
+        sel.innerHTML = '';
+        TEAM_DATA.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            opt.textContent = a.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    function onAthleteChange() {
+        const selId = document.getElementById('athlete-select').value;
+        const found = TEAM_DATA.find(a => a.id === selId);
+        if (found) {
+            currentAthlete = found;
+            localStorage.setItem('tp_volley_selected_athlete', currentAthlete.id);
+            renderAthleteView();
+            showToast('Caricato profilo di ' + currentAthlete.name);
+        }
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('#tab-profile, #tab-workout, #tab-rpe, #tab-history').forEach(el => el.style.display = 'none');
+        
+        const activeBtn = document.getElementById('tab-btn-' + tabName);
+        if (activeBtn) activeBtn.classList.add('active');
+        
+        const targetDiv = document.getElementById('tab-' + tabName);
+        if (targetDiv) targetDiv.style.display = 'block';
+        
+        if (tabName === 'history') {
+            renderHistoryView();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchWeek(wNum) {
+        currentWeek = wNum;
+        document.querySelectorAll('.week-btn').forEach((btn, idx) => {
+            if (idx + 1 === wNum) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        renderExercises();
+        loadSavedInputsForCurrentWeek();
+    }
+
+    function renderAthleteView() {
+        const cleanRole = currentAthlete.role.split('(')[0].trim();
+        document.getElementById('athlete-role-badge').textContent = cleanRole;
+        
+        // Tab 1: Profilo & Prehab
+        document.getElementById('profile-clinical-text').innerHTML = '<strong>Diagnosi:</strong> ' + currentAthlete.clinical_summary + '<br><strong>Video screening:</strong> ' + currentAthlete.video_findings;
+        document.getElementById('profile-golden-rules').innerHTML = '<strong>⭐ 3 REGOLE D\'ORO:</strong><br>' + currentAthlete.golden_rules_html;
+        document.getElementById('profile-forbidden').innerHTML = '<strong>🚫 DIVIETI:</strong> ' + currentAthlete.forbidden_movements;
+        document.getElementById('profile-prehab-pesi').innerHTML = currentAthlete.prehab_pesi_structured;
+        document.getElementById('profile-prehab-campo').innerHTML = '<strong>• 3\' Mobilità:</strong> ' + currentAthlete.prehab_campo_3min + '<br><br><strong>• 7\' Prevenzione:</strong><br>' + currentAthlete.prehab_campo_7min_structured;
+        
+        // Tab 2: Esercizi
+        renderExercises();
+        loadSavedInputsForCurrentWeek();
+    }
+
+    function renderExercises() {
+        const banner = document.getElementById('week-goal-banner');
+        let bannerHtml = '';
+        let volDose = '';
+        
+        if (currentWeek === 1) {
+            bannerHtml = '<strong>🎯 SETTIMANA 1 (ADATTAMENTO):</strong> 3 serie x 8-10 rip a <strong>RPE 5-6 (Buffer 4-5)</strong>. Discesa lenta in 3 secondi.';
+            volDose = '3 serie × 8–10 rip • RPE 5–6 (Buffer 4–5)';
+        } else if (currentWeek === 2) {
+            bannerHtml = '<strong>🎯 SETTIMANA 2 (CONSOLIDAMENTO):</strong> 3 serie x 8 rip a <strong>RPE 6 (Buffer 4)</strong>. Stesso peso o +1kg, più velocità di spinta.';
+            volDose = '3 serie × 8 rip • RPE 6 (Buffer 4)';
+        } else if (currentWeek === 3) {
+            bannerHtml = '<strong>🎯 SETTIMANA 3 (SOVRACCARICO):</strong> <strong>4 serie</strong> x 8 rip a <strong>RPE 7-8 (Buffer 2-3)</strong>. Aumenta il carico del 5-10%!';
+            volDose = '4 serie × 8 rip • RPE 7–8 (Buffer 2–3)';
+        } else if (currentWeek === 4) {
+            bannerHtml = '<strong>🎯 SETTIMANA 4 (DELOAD ATTIVO):</strong> 2-3 serie x 6-8 rip a <strong>RPE 5-6</strong>. Scarico del 30% per rigenerare tendini e articolazioni.';
+            volDose = '2–3 serie × 6–8 rip • RPE 5–6 (Deload)';
+        }
+        banner.innerHTML = bannerHtml;
+
+        const container = document.getElementById('exercises-container');
+        container.innerHTML = '';
+
+        currentAthlete.session.forEach((ex, idx) => {
+            const card = document.createElement('div');
+            card.className = 'exercise-block';
+
+            let exListHtml = '';
+            let inputFieldsHtml = '';
+
+            ex.ex_list.forEach((eItem, eIdx) => {
+                exListHtml += '<div style="margin-bottom: 8px;">' +
+                    '<div style="font-weight: 800; font-size: 0.92rem; color: #0f172a;">' +
+                        '<span class="ex-badge">' + eItem.code + '</span> ' + eItem.name +
+                    '</div>' +
+                    '<a href="' + eItem.url + '" target="_blank" class="video-btn">▶️ ' + eItem.btn + '</a>' +
+                '</div>';
+
+                if (ex.log_tag === 'SUPERSET_A' || ex.log_tag === 'SUPERSET_B') {
+                    const inputId = 'load_' + currentAthlete.id + '_w' + currentWeek + '_' + eItem.code;
+                    inputFieldsHtml += '<div class="load-input-row">' +
+                        '<div class="load-label">⚖️ Carico ' + eItem.code + ' (Kg):</div>' +
+                        '<input type="text" id="' + inputId + '" class="load-input" placeholder="es. 12 kg">' +
+                    '</div>';
+                }
+            });
+
+            let stepsHtml = '';
+            ex.step_list.forEach((st, sIdx) => {
+                stepsHtml += '<div class="step-item"><strong>' + (sIdx + 1) + '.</strong> ' + st + '</div>';
+            });
+
+            card.innerHTML = '<div class="ex-header">' +
+                    '<div>' +
+                        '<div style="font-size: 0.72rem; font-weight: 800; color: var(--primary); text-transform: uppercase;">' + ex.phase_title + ' • ' + ex.time_badge + '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="dose-tag">⏱️ ' + volDose + '</div>' +
+                exListHtml +
+                '<div style="margin-top: 8px; margin-bottom: 8px;">' +
+                    stepsHtml +
+                '</div>' +
+                (ex.cues ? '<div style="color: var(--primary); font-style: italic; font-size: 0.80rem; margin-top: 4px;">🗣️ "' + ex.cues + '"</div>' : '') +
+                (ex.reg ? '<div class="variant-reg"><strong>🔴 Semplifica:</strong> ' + ex.reg + '</div>' : '') +
+                (ex.prog ? '<div class="variant-prog"><strong>🟢 Complica:</strong> ' + ex.prog + '</div>' : '') +
+                '<div class="focus-box">' +
+                    '🎯 <strong>Focus ' + currentAthlete.name.split(' ')[0] + ':</strong> ' + ex.individual_focus + '<br>' +
+                    '<span style="font-size: 0.75rem; color: #475569; font-weight: normal;">🛡️ ' + ex.safety_note + '</span>' +
+                '</div>' +
+                inputFieldsHtml;
+            container.appendChild(card);
+        });
+    }
+
+    function saveWorkout() {
+        const athleteKey = 'tp_log_' + currentAthlete.id;
+        let athleteHistory = JSON.parse(localStorage.getItem(athleteKey) || '{}');
+
+        const wKey = 'settimana_' + currentWeek;
+        athleteHistory[wKey] = {
+            timestamp: new Date().toISOString(),
+            settimana: currentWeek,
+            fatica: document.getElementById('checkin-fatica').value,
+            dolore: document.getElementById('checkin-dolore').value,
+            note: document.getElementById('checkin-note').value,
+            loads: {}
+        };
+
+        ['A1', 'A2', 'B1', 'B2'].forEach(code => {
+            const inputEl = document.getElementById('load_' + currentAthlete.id + '_w' + currentWeek + '_' + code);
+            if (inputEl) {
+                athleteHistory[wKey].loads[code] = inputEl.value.trim();
+            }
+        });
+
+        localStorage.setItem(athleteKey, JSON.stringify(athleteHistory));
+        showToast('✅ Seduta ' + currentWeek + ' salvata con successo!');
+    }
+
+    function loadSavedInputsForCurrentWeek() {
+        const athleteKey = 'tp_log_' + currentAthlete.id;
+        const athleteHistory = JSON.parse(localStorage.getItem(athleteKey) || '{}');
+        const wData = athleteHistory['settimana_' + currentWeek];
+
+        ['A1', 'A2', 'B1', 'B2'].forEach(code => {
+            const inputEl = document.getElementById('load_' + currentAthlete.id + '_w' + currentWeek + '_' + code);
+            if (inputEl) {
+                inputEl.value = (wData && wData.loads && wData.loads[code]) ? wData.loads[code] : '';
+            }
+        });
+
+        if (wData) {
+            if (wData.fatica) document.getElementById('checkin-fatica').value = wData.fatica;
+            if (wData.dolore) document.getElementById('checkin-dolore').value = wData.dolore;
+            if (wData.note) document.getElementById('checkin-note').value = wData.note;
+        } else {
+            document.getElementById('checkin-note').value = '';
+        }
+    }
+
+    function renderHistoryView() {
+        const container = document.getElementById('history-table-container');
+        const athleteKey = 'tp_log_' + currentAthlete.id;
+        const athleteHistory = JSON.parse(localStorage.getItem(athleteKey) || '{}');
+
+        if (Object.keys(athleteHistory).length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 25px 15px; font-size: 0.85rem;">' +
+                'Nessuna seduta registrata finora per <strong>' + currentAthlete.name + '</strong>.<br>' +
+                '<button type="button" onclick="switchTab(\'workout\'); switchWeek(1);" style="margin-top: 12px; background: var(--primary); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer;">' +
+                    '🏋️ Registra Seduta 1 Ora' +
+                '</button>' +
+            '</div>';
+            return;
+        }
+
+        let tableHtml = '<table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px;">' +
+            '<thead>' +
+                '<tr style="background: #0f172a; color: #ffffff;">' +
+                    '<th style="padding: 8px 4px; text-align: left;">Settimana</th>' +
+                    '<th style="padding: 8px 2px;">A1</th>' +
+                    '<th style="padding: 8px 2px;">A2</th>' +
+                    '<th style="padding: 8px 2px;">B1</th>' +
+                    '<th style="padding: 8px 2px;">B2</th>' +
+                    '<th style="padding: 8px 4px; text-align: center;">Azioni</th>' +
+                '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+        for (let w = 1; w <= 4; w++) {
+            const wData = athleteHistory['settimana_' + w];
+            const bg = w % 2 === 0 ? '#f8fafc' : '#ffffff';
+            
+            if (wData) {
+                const a1 = (wData.loads && wData.loads.A1) || '-';
+                const a2 = (wData.loads && wData.loads.A2) || '-';
+                const b1 = (wData.loads && wData.loads.B1) || '-';
+                const b2 = (wData.loads && wData.loads.B2) || '-';
+                
+                tableHtml += '<tr style="background: ' + bg + '; border-bottom: 1px solid #e2e8f0;">' +
+                    '<td style="padding: 10px 4px; font-weight: 800; color: var(--primary);">' +
+                        'Sett. ' + w + '<br>' +
+                        '<span style="font-size: 0.65rem; color: #64748b; font-weight: 600;">' + (wData.fatica || '') + '</span>' +
+                    '</td>' +
+                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + a1 + '</td>' +
+                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + a2 + '</td>' +
+                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + b1 + '</td>' +
+                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + b2 + '</td>' +
+                    '<td style="padding: 10px 4px; text-align: center;">' +
+                        '<div style="display: flex; gap: 6px; justify-content: center; align-items: center;">' +
+                            '<button type="button" onclick="editWeekHistory(' + w + ')" title="Modifica" style="background: #e0f2fe; color: #0284c7; border: 1.5px solid #38bdf8; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
+                                '✏️' +
+                            '</button>' +
+                            '<button type="button" onclick="openDeleteModal(' + w + ')" title="Elimina" style="background: #fee2e2; color: #dc2626; border: 1.5px solid #f87171; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
+                                '🗑️' +
+                            '</button>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+            } else {
+                tableHtml += '<tr style="background: ' + bg + '; border-bottom: 1px solid #e2e8f0;">' +
+                    '<td style="padding: 10px 4px; font-weight: 800; color: #94a3b8;">Sett. ' + w + '</td>' +
+                    '<td colspan="4" style="padding: 10px 2px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-style: italic;">Non ancora registrata</td>' +
+                    '<td style="padding: 10px 4px; text-align: center;">' +
+                        '<button type="button" onclick="editWeekHistory(' + w + ')" style="background: #f1f5f9; color: #004b87; border: 1.5px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem; cursor: pointer;">' +
+                            '➕ Inizia' +
+                        '</button>' +
+                    '</td>' +
+                '</tr>';
+            }
+        }
+
+        tableHtml += '</tbody></table>';
+        container.innerHTML = tableHtml;
+    }
+
+    function openDeleteModal(wNum) {
+        weekToDelete = wNum;
+        document.getElementById('modal-desc').innerHTML = 'Vuoi davvero cancellare i dati della <strong>Settimana ' + wNum + '</strong> per <strong>' + currentAthlete.name + '</strong>?';
+        const modal = document.getElementById('custom-modal');
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        weekToDelete = null;
+        document.getElementById('custom-modal').style.display = 'none';
+    }
+
+    function executeDeleteWeek() {
+        if (weekToDelete !== null) {
+            const wNum = weekToDelete;
+            const athleteKey = 'tp_log_' + currentAthlete.id;
+            let athleteHistory = JSON.parse(localStorage.getItem(athleteKey) || '{}');
+            
+            if (athleteHistory['settimana_' + wNum]) {
+                delete athleteHistory['settimana_' + wNum];
+                localStorage.setItem(athleteKey, JSON.stringify(athleteHistory));
+                renderHistoryView();
+                
+                if (currentWeek === wNum) {
+                    loadSavedInputsForCurrentWeek();
+                }
+                showToast('🗑️ Carichi Settimana ' + wNum + ' eliminati!');
+            }
+            closeModal();
+        }
+    }
+
+    function editWeekHistory(wNum) {
+        switchTab('workout');
+        switchWeek(wNum);
+        showToast('✏️ Modalità modifica: Settimana ' + wNum);
+    }
+
+    function exportHistoryCSV() {
+        let csvContent = "data:text/csv;charset=utf-8,Atleta,Settimana,A1,A2,B1,B2,Fatica,Dolore,Note\\n";
+        
+        TEAM_DATA.forEach(a => {
+            const aHist = JSON.parse(localStorage.getItem('tp_log_' + a.id) || '{}');
+            for (let w = 1; w <= 4; w++) {
+                const wData = aHist['settimana_' + w];
+                if (wData) {
+                    const a1 = (wData.loads && wData.loads.A1) || '';
+                    const a2 = (wData.loads && wData.loads.A2) || '';
+                    const b1 = (wData.loads && wData.loads.B1) || '';
+                    const b2 = (wData.loads && wData.loads.B2) || '';
+                    const fat = wData.fatica || '';
+                    const dol = wData.dolore || '';
+                    const not = (wData.note || '').replace(',', ' ');
+                    csvContent += '"' + a.name + '",Settimana ' + w + ',"' + a1 + '","' + a2 + '","' + b1 + '","' + b2 + '","' + fat + '","' + dol + '","' + not + '"\\n';
+                }
+            }
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "STORICO_CARICHI_TRAPANI_VOLLEY.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+</script>
+</body>
+</html>
