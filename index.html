@@ -1073,64 +1073,102 @@
             return;
         }
 
-        let tableHtml = '<table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 8px;">' +
-            '<thead>' +
-                '<tr style="background: #0f172a; color: #ffffff;">' +
-                    '<th style="padding: 8px 4px; text-align: left;">Settimana</th>' +
-                    '<th style="padding: 8px 2px;">A1</th>' +
-                    '<th style="padding: 8px 2px;">A2</th>' +
-                    '<th style="padding: 8px 2px;">B1</th>' +
-                    '<th style="padding: 8px 2px;">B2</th>' +
-                    '<th style="padding: 8px 4px; text-align: center;">Azioni</th>' +
-                '</tr>' +
-            '</thead>' +
-            '<tbody>';
+        let historyHtml = '<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">';
 
         for (let w = 1; w <= 4; w++) {
             const wData = athleteHistory['settimana_' + w];
-            const bg = w % 2 === 0 ? '#f8fafc' : '#ffffff';
             
             if (wData) {
-                const a1 = (wData.loads && wData.loads.A1) || '-';
-                const a2 = (wData.loads && wData.loads.A2) || '-';
-                const b1 = (wData.loads && wData.loads.B1) || '-';
-                const b2 = (wData.loads && wData.loads.B2) || '-';
-                
-                tableHtml += '<tr style="background: ' + bg + '; border-bottom: 1px solid #e2e8f0;">' +
-                    '<td style="padding: 10px 4px; font-weight: 800; color: var(--primary);">' +
-                        'Sett. ' + w + '<br>' +
-                        '<span style="font-size: 0.65rem; color: #64748b; font-weight: 600;">' + (wData.fatica || '') + '</span>' +
-                    '</td>' +
-                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + a1 + '</td>' +
-                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + a2 + '</td>' +
-                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + b1 + '</td>' +
-                    '<td style="padding: 10px 2px; text-align: center; font-weight: 800; color: #166534;">' + b2 + '</td>' +
-                    '<td style="padding: 10px 4px; text-align: center;">' +
-                        '<div style="display: flex; gap: 6px; justify-content: center; align-items: center;">' +
-                            '<button type="button" onclick="editWeekHistory(' + w + ')" title="Modifica" style="background: #e0f2fe; color: #0284c7; border: 1.5px solid #38bdf8; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
-                                '✏️' +
+                const a1 = (wData.loads && wData.loads.A1) ? wData.loads.A1 : '-';
+                const a2 = (wData.loads && wData.loads.A2) ? wData.loads.A2 : '-';
+                const b1 = (wData.loads && wData.loads.B1) ? wData.loads.B1 : '-';
+                const b2 = (wData.loads && wData.loads.B2) ? wData.loads.B2 : '-';
+                const fatica = wData.fatica || 'Non specificata';
+                const dolore = wData.dolore || '0/10 (Nessun fastidio)';
+                const note = wData.note ? wData.note.trim() : '';
+
+                let doloreBg = '#f0fdf4';
+                let doloreColor = '#166534';
+                let doloreBorder = '#bbf7d0';
+                if (dolore.includes('2/10')) {
+                    doloreBg = '#fefce8';
+                    doloreColor = '#854d0e';
+                    doloreBorder = '#fef08a';
+                } else if (dolore.includes('4/10') || dolore.includes('6/10') || dolore.includes('Forte')) {
+                    doloreBg = '#fef2f2';
+                    doloreColor = '#991b1b';
+                    doloreBorder = '#fecaca';
+                }
+
+                historyHtml += '<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">' +
+                    '<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 10px;">' +
+                        '<div>' +
+                            '<span style="font-weight: 900; font-size: 0.95rem; color: var(--primary);">📅 Settimana ' + w + '</span>' +
+                            '<span style="font-size: 0.72rem; color: #166534; margin-left: 6px; font-weight: 700; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">Completata ✅</span>' +
+                        '</div>' +
+                        '<div style="display: flex; gap: 6px;">' +
+                            '<button type="button" onclick="editWeekHistory(' + w + ')" title="Modifica" style="background: #e0f2fe; color: #0284c7; border: 1.5px solid #38bdf8; padding: 5px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">' +
+                                '✏️ Modifica' +
                             '</button>' +
-                            '<button type="button" onclick="openDeleteModal(' + w + ')" title="Elimina" style="background: #fee2e2; color: #dc2626; border: 1.5px solid #f87171; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
+                            '<button type="button" onclick="openDeleteModal(' + w + ')" title="Elimina" style="background: #fee2e2; color: #dc2626; border: 1.5px solid #f87171; padding: 5px 8px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
                                 '🗑️' +
                             '</button>' +
                         '</div>' +
-                    '</td>' +
-                '</tr>';
+                    '</div>' +
+                    
+                    '<!-- GRIGLIA CARICHI -->' +
+                    '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; text-align: center;">' +
+                        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 2px;">' +
+                            '<div style="font-size: 0.68rem; font-weight: 800; color: #64748b;">A1</div>' +
+                            '<div style="font-weight: 900; font-size: 0.92rem; color: #166534; margin-top: 2px;">' + a1 + '</div>' +
+                        '</div>' +
+                        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 2px;">' +
+                            '<div style="font-size: 0.68rem; font-weight: 800; color: #64748b;">A2</div>' +
+                            '<div style="font-weight: 900; font-size: 0.92rem; color: #166534; margin-top: 2px;">' + a2 + '</div>' +
+                        '</div>' +
+                        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 2px;">' +
+                            '<div style="font-size: 0.68rem; font-weight: 800; color: #64748b;">B1</div>' +
+                            '<div style="font-weight: 900; font-size: 0.92rem; color: #166534; margin-top: 2px;">' + b1 + '</div>' +
+                        '</div>' +
+                        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 2px;">' +
+                            '<div style="font-size: 0.68rem; font-weight: 800; color: #64748b;">B2</div>' +
+                            '<div style="font-weight: 900; font-size: 0.92rem; color: #166534; margin-top: 2px;">' + b2 + '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<!-- CHECK-IN STATUS: FATICA & DOLORE -->' +
+                    '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">' +
+                        '<div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 8px; font-size: 0.76rem;">' +
+                            '<span style="color: #1e40af; font-weight: 800;">⚡ Fatica (RPE):</span><br>' +
+                            '<strong style="color: #0f172a; font-size: 0.80rem;">' + fatica + '</strong>' +
+                        '</div>' +
+                        '<div style="background: ' + doloreBg + '; border: 1px solid ' + doloreBorder + '; border-radius: 6px; padding: 6px 8px; font-size: 0.76rem;">' +
+                            '<span style="color: ' + doloreColor + '; font-weight: 800;">🩹 Fastidio Articolare:</span><br>' +
+                            '<strong style="color: ' + doloreColor + '; font-size: 0.80rem;">' + dolore + '</strong>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<!-- NOTE COACH -->' +
+                    '<div style="background: #faf5ff; border-left: 3.5px solid #9333ea; border-radius: 4px; padding: 6px 8px; font-size: 0.78rem; color: #3b0764;">' +
+                        '💬 <strong>Note Seduta:</strong> ' + (note ? '<em>"' + note + '"</em>' : '<span style="color: #94a3b8; font-style: italic;">Nessuna nota inserita</span>') +
+                    '</div>' +
+
+                '</div>';
             } else {
-                tableHtml += '<tr style="background: ' + bg + '; border-bottom: 1px solid #e2e8f0;">' +
-                    '<td style="padding: 10px 4px; font-weight: 800; color: #94a3b8;">Sett. ' + w + '</td>' +
-                    '<td colspan="4" style="padding: 10px 2px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-style: italic;">Non ancora registrata</td>' +
-                    '<td style="padding: 10px 4px; text-align: center;">' +
-                        '<button type="button" onclick="editWeekHistory(' + w + ')" style="background: #f1f5f9; color: #004b87; border: 1.5px solid #cbd5e1; padding: 6px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem; cursor: pointer;">' +
-                            '➕ Inizia' +
-                        '</button>' +
-                    '</td>' +
-                '</tr>';
+                historyHtml += '<div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">' +
+                    '<div>' +
+                        '<div style="font-weight: 800; font-size: 0.90rem; color: #64748b;">📅 Settimana ' + w + '</div>' +
+                        '<div style="font-size: 0.75rem; color: #94a3b8; font-style: italic;">Seduta non ancora registrata</div>' +
+                    '</div>' +
+                    '<button type="button" onclick="editWeekHistory(' + w + ')" style="background: #ffffff; color: var(--primary); border: 1.5px solid var(--primary); padding: 7px 12px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; cursor: pointer;">' +
+                        '➕ Compila' +
+                    '</button>' +
+                '</div>';
             }
         }
 
-        tableHtml += '</tbody></table>';
-        container.innerHTML = tableHtml;
+        historyHtml += '</div>';
+        container.innerHTML = historyHtml;
     }
 
     function openDeleteModal(wNum) {
