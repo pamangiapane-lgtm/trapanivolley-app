@@ -805,9 +805,18 @@
     let weekToDelete = null;
 
     function initApp() {
-        currentAthlete = DEMO_ATHLETE;
+        const savedId = localStorage.getItem('tp_volley_selected_athlete');
+        if (savedId) {
+            const found = TEAM_DATA.find(a => a.id === savedId);
+            if (found) {
+                currentAthlete = found;
+            }
+        } else {
+            currentAthlete = DEMO_ATHLETE;
+        }
+        
         const sel = document.getElementById('athlete-select');
-        if (sel) sel.value = "";
+        if (sel) sel.value = currentAthlete.id;
         renderAthleteView();
     }
 
@@ -822,6 +831,7 @@
         const selId = document.getElementById('athlete-select').value;
         if (!selId) {
             currentAthlete = DEMO_ATHLETE;
+            localStorage.removeItem('tp_volley_selected_athlete');
             renderAthleteView();
             showToast('ℹ️ Visualizzazione Guida Dimostrativa');
             return;
@@ -829,8 +839,22 @@
         const found = TEAM_DATA.find(a => a.id === selId);
         if (found) {
             currentAthlete = found;
+            localStorage.setItem('tp_volley_selected_athlete', currentAthlete.id);
             renderAthleteView();
             showToast('✅ Caricata scheda di ' + currentAthlete.name);
+        }
+    }
+
+    function selectAthleteFromHistory(athleteId) {
+        const found = TEAM_DATA.find(a => a.id === athleteId);
+        if (found) {
+            currentAthlete = found;
+            localStorage.setItem('tp_volley_selected_athlete', currentAthlete.id);
+            const sel = document.getElementById('athlete-select');
+            if (sel) sel.value = currentAthlete.id;
+            renderAthleteView();
+            renderHistoryView();
+            showToast('✅ Selezionata ' + currentAthlete.name);
         }
     }
 
@@ -1052,11 +1076,35 @@
     function renderHistoryView() {
         const container = document.getElementById('history-table-container');
         if (!currentAthlete || currentAthlete.id === "") {
-            container.innerHTML = '<div style="text-align: center; color: #475569; padding: 30px 15px; font-size: 0.88rem; line-height: 1.5;">' +
-                '<div style="font-size: 2.2rem; margin-bottom: 8px;">📜 👤</div>' +
-                '<strong>Seleziona un\'atleta dal menu in alto</strong> per visualizzare lo storico dei carichi salvati, verificare le progressioni settimanali ed esportare il report CSV.<br><br>' +
-                '<span style="font-size: 0.78rem; color: #64748b;">(Tutte le registrazioni delle atlete vengono memorizzate in sicurezza sul dispositivo e possono essere scaricate in qualsiasi momento).</span>' +
-            '</div>';
+            let teamOverviewHtml = '<div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-top: 8px;">' +
+                '<div style="font-weight: 900; font-size: 1.0rem; color: #0f172a; margin-bottom: 4px;">👥 Archivio Completo Squadra</div>' +
+                '<div style="font-size: 0.78rem; color: #64748b; margin-bottom: 12px;">Tocca un\'atleta per visualizzare o registrare le sue 4 settimane:</div>' +
+                '<div style="display: flex; flex-direction: column; gap: 8px;">';
+
+            TEAM_DATA.forEach(a => {
+                const aHist = JSON.parse(localStorage.getItem('tp_log_' + a.id) || '{}');
+                const loggedCount = Object.keys(aHist).length;
+                let statusBadge = '';
+                if (loggedCount === 0) {
+                    statusBadge = '<span style="font-size: 0.70rem; color: #94a3b8; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-weight: 600;">0/4 Sedute</span>';
+                } else {
+                    statusBadge = '<span style="font-size: 0.70rem; color: #166534; background: #dcfce7; padding: 3px 6px; border-radius: 4px; font-weight: 700;">' + loggedCount + '/4 Sedute ✅</span>';
+                }
+
+                teamOverviewHtml += '<div onclick="selectAthleteFromHistory(\'' + a.id + '\')" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; cursor: pointer;">' +
+                    '<div>' +
+                        '<div style="font-weight: 800; font-size: 0.88rem; color: #0f172a;">👤 ' + a.name + '</div>' +
+                        '<div style="font-size: 0.72rem; color: #64748b;">' + a.role.split('(')[0].trim() + '</div>' +
+                    '</div>' +
+                    '<div style="display: flex; align-items: center; gap: 8px;">' +
+                        statusBadge +
+                        '<span style="font-size: 0.85rem; color: var(--primary); font-weight: 900;">➔</span>' +
+                    '</div>' +
+                '</div>';
+            });
+
+            teamOverviewHtml += '</div></div>';
+            container.innerHTML = teamOverviewHtml;
             return;
         }
 
