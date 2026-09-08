@@ -845,6 +845,43 @@
             const json = await res.json();
             if (json && json.status === 'success' && json.data) {
                 const cloudData = json.data;
+
+                // 1. Auto-upload di eventuali sedute registrate in precedenza in locale (es. ieri) non ancora presenti sul Cloud
+                if (typeof TEAM_DATA !== 'undefined' && Array.isArray(TEAM_DATA)) {
+                    for (const ath of TEAM_DATA) {
+                        const athKey = 'tp_log_' + ath.id;
+                        const localRaw = localStorage.getItem(athKey);
+                        if (localRaw) {
+                            try {
+                                const localHist = JSON.parse(localRaw);
+                                for (const wKey of Object.keys(localHist)) {
+                                    const item = localHist[wKey];
+                                    if (item && (!cloudData[ath.id] || !cloudData[ath.id][wKey])) {
+                                        // Seduta locale assente su Google Sheets: invio automatico al cloud
+                                        fetch(GOOGLE_SYNC_URL, {
+                                            method: 'POST',
+                                            mode: 'no-cors',
+                                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                            body: JSON.stringify({
+                                                athlete_id: ath.id,
+                                                athlete_name: ath.name,
+                                                settimana: item.settimana || parseInt(wKey.replace('settimana_', '')) || 1,
+                                                loads: item.loads || {},
+                                                fatica: item.fatica || '',
+                                                dolore: item.dolore || '',
+                                                note: item.note || ''
+                                            })
+                                        }).catch(err => console.warn('Auto-push local record error:', err));
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('Parse local history error:', e);
+                            }
+                        }
+                    }
+                }
+
+                // 2. Aggiornamento memoria locale con i dati provenienti dal Cloud
                 Object.keys(cloudData).forEach(athId => {
                     const athKey = 'tp_log_' + athId;
                     let localHist = JSON.parse(localStorage.getItem(athKey) || '{}');
@@ -853,6 +890,7 @@
                     });
                     localStorage.setItem(athKey, JSON.stringify(localHist));
                 });
+
                 if (currentAthlete && currentAthlete.id !== "") {
                     loadSavedInputsForCurrentWeek();
                 }
