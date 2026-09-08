@@ -634,7 +634,14 @@
             <div class="app-card">
                 <div class="card-header">
                     <span class="card-title">📜 I Tuoi Carichi Registrati</span>
-                    <button onclick="exportHistoryCSV()" style="background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">📥 Esporta CSV</button>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button type="button" onclick="syncCloudDatabase(false)" style="background: #0284c7; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            🔄 Sincronizza
+                        </button>
+                        <button type="button" onclick="exportHistoryCSV()" style="background: var(--primary); color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">
+                            📥 CSV
+                        </button>
+                    </div>
                 </div>
                 <div id="history-table-container"></div>
             </div>
@@ -818,6 +825,9 @@
         const sel = document.getElementById('athlete-select');
         if (sel) sel.value = currentAthlete.id;
         renderAthleteView();
+        
+        // Sync cloud database in background
+        syncCloudDatabase(true);
     }
 
     if (document.readyState === 'loading') {
@@ -826,6 +836,34 @@
         initApp();
     }
     setTimeout(initApp, 100);
+
+    async function syncCloudDatabase(silent = false) {
+        if (!GOOGLE_SYNC_URL) return;
+        try {
+            if (!silent) showToast('🔄 Sincronizzazione con Google Drive...');
+            const res = await fetch(GOOGLE_SYNC_URL);
+            const json = await res.json();
+            if (json && json.status === 'success' && json.data) {
+                const cloudData = json.data;
+                Object.keys(cloudData).forEach(athId => {
+                    const athKey = 'tp_log_' + athId;
+                    let localHist = JSON.parse(localStorage.getItem(athKey) || '{}');
+                    Object.keys(cloudData[athId]).forEach(wKey => {
+                        localHist[wKey] = cloudData[athId][wKey];
+                    });
+                    localStorage.setItem(athKey, JSON.stringify(localHist));
+                });
+                if (currentAthlete && currentAthlete.id !== "") {
+                    loadSavedInputsForCurrentWeek();
+                }
+                renderHistoryView();
+                if (!silent) showToast('☁️ Database Squadra sincronizzato con Drive!');
+            }
+        } catch (e) {
+            console.warn('Sync cloud warning:', e);
+            if (!silent) showToast('⚠️ Connessione cloud non disponibile (uso dati locali)');
+        }
+    }
 
     function onAthleteChange() {
         const selId = document.getElementById('athlete-select').value;
@@ -870,6 +908,7 @@
         
         if (tabName === 'history') {
             renderHistoryView();
+            syncCloudDatabase(true);
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1021,7 +1060,7 @@
         });
     }
 
-    function saveWorkout() {
+    async function saveWorkout() {
         if (!currentAthlete || currentAthlete.id === "") {
             showToast('⚠️ Seleziona prima il tuo nome dal menu in alto per salvare i carichi!');
             return;
@@ -1031,24 +1070,54 @@
         let athleteHistory = JSON.parse(localStorage.getItem(athleteKey) || '{}');
 
         const wKey = 'settimana_' + currentWeek;
-        athleteHistory[wKey] = {
-            timestamp: new Date().toISOString(),
-            settimana: currentWeek,
-            fatica: document.getElementById('checkin-fatica').value,
-            dolore: document.getElementById('checkin-dolore').value,
-            note: document.getElementById('checkin-note').value,
-            loads: {}
-        };
-
+        const loadsObj = {};
         ['A1', 'A2', 'B1', 'B2'].forEach(code => {
             const inputEl = document.getElementById('load_' + currentAthlete.id + '_w' + currentWeek + '_' + code);
             if (inputEl) {
-                athleteHistory[wKey].loads[code] = inputEl.value.trim();
+                loadsObj[code] = inputEl.value.trim();
             }
         });
 
+        const faticaVal = document.getElementById('checkin-fatica').value;
+        const doloreVal = document.getElementById('checkin-dolore').value;
+        const noteVal = document.getElementById('checkin-note').value;
+
+        athleteHistory[wKey] = {
+            timestamp: new Date().toISOString(),
+            settimana: currentWeek,
+            fatica: faticaVal,
+            dolore: doloreVal,
+            note: noteVal,
+            loads: loadsObj
+        };
+
+        // 1. Salvataggio locale immediato (0ms)
         localStorage.setItem(athleteKey, JSON.stringify(athleteHistory));
-        showToast('✅ Seduta ' + currentWeek + ' salvata con successo!');
+        showToast('💾 Salvataggio in corso...');
+
+        // 2. Sincronizzazione Cloud con Google Drive
+        const payload = {
+            athlete_id: currentAthlete.id,
+            athlete_name: currentAthlete.name,
+            settimana: currentWeek,
+            loads: loadsObj,
+            fatica: faticaVal,
+            dolore: doloreVal,
+            note: noteVal
+        };
+
+        try {
+            await fetch(GOOGLE_SYNC_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            showToast('☁️ Seduta ' + currentWeek + ' salvata su Google Drive!');
+        } catch (err) {
+            console.warn('Google Drive Sync error:', err);
+            showToast('✅ Seduta ' + currentWeek + ' salvata in locale');
+        }
     }
 
     function loadSavedInputsForCurrentWeek() {
