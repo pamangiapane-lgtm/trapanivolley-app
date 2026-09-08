@@ -634,14 +634,7 @@
             <div class="app-card">
                 <div class="card-header">
                     <span class="card-title">📜 I Tuoi Carichi Registrati</span>
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <button type="button" onclick="syncCloudDatabase(false)" style="background: #0284c7; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                            🔄 Sincronizza
-                        </button>
-                        <button type="button" onclick="exportHistoryCSV()" style="background: var(--primary); color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">
-                            📥 CSV
-                        </button>
-                    </div>
+                    <button onclick="exportHistoryCSV()" style="background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">📥 Esporta CSV</button>
                 </div>
                 <div id="history-table-container"></div>
             </div>
